@@ -1,0 +1,103 @@
+{
+  "version": "2.1.0",
+  "tracks": [
+    {
+      "id": "track_007",
+      "title": "Can't You See",
+      "artist": "Heeling",
+      "category": "healing",
+      "duration": 180,
+      "audioFile": "cant_you_see",
+      "backgroundImage": "https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=600",
+      "recommendedBrightness": 0.2,
+      "isFree": true,
+      "sortOrder": 0,
+      "tags": ["힐링", "New"],
+      "playCount": 0
+    },
+    {
+      "id": "track_001",
+      "title": "Dreaming in Dusk",
+      "artist": "Heeling",
+      "category": "sleep",
+      "duration": 180,
+      "audioFile": "dreaming_in_dusk",
+      "backgroundImage": "https://images.unsplash.com/photo-1507400492013-162706c8c05e?w=600",
+      "recommendedBrightness": 0.05,
+      "isFree": true,
+      "sortOrder": 1,
+      "tags": ["수면", "릴렉스", "밤"],
+      "playCount": 0
+    },
+    {
+      "id": "track_002",
+      "title": "Dreams in Slow Motion",
+      "artist": "Heeling",
+      "category": "sleep",
+      "duration": 200,
+      "audioFile": "dreams_in_slow_motion",
+      "backgroundImage": "https://images.unsplash.com/photo-1448375240586-882707db888b?w=600",
+      "recommendedBrightness": 0.1,
+      "isFree": true,
+      "sortOrder": 2,
+      "tags": ["수면", "편안함", "꿈"],
+      "playCount": 0
+    },
+    {
+      "id": "track_003",
+      "title": "Moonlight Murmur",
+      "artist": "Heeling",
+      "category": "meditation",
+      "duration": 220,
+      "audioFile": "moonlight_murmur",
+      "backgroundImage": "https://images.unsplash.com/photo-1532767153582-b1a0e5145009?w=600",
+      "recommendedBrightness": 0.15,
+      "isFree": true,
+      "sortOrder": 3,
+      "tags": ["명상", "달빛", "고요함"],
+      "playCount": 0
+    },
+    {
+      "id": "track_004",
+      "title": "Moonlight Reverie",
+      "artist": "Heeling",
+      "category": "meditation",
+      "duration": 190,
+      "audioFile": "moonlight_reverie",
+      "backgroundImage": "https://images.unsplash.com/photo-1515694346937-94d85e41e6f0?w=600",
+      "recommendedBrightness": 0.2,
+      "isFree": true,
+      "sortOrder": 4,
+      "tags": ["명상", "달빛", "몽환"],
+      "playCount": 0
+    },
+    {
+      "id": "track_005",
+      "title": "Pink Cloud",
+      "artist": "Heeling",
+      "category": "nature",
+      "duration": 210,
+      "audioFile": "pink_cloud",
+      "backgroundImage": "https://images.unsplash.com/photo-1534088568595-a066f410bcda?w=600",
+      "recommendedBrightness": 0.25,
+      "isFree": true,
+      "sortOrder": 5,
+      "tags": ["자연", "구름", "하늘"],
+      "playCount": 0
+    },
+    {
+      "id": "track_006",
+      "title": "Still as the Sky",
+      "artist": "Heeling",
+      "category": "focus",
+      "duration": 240,
+      "audioFile": "still_as_the_sky",
+      "backgroundImage": "https://images.unsplash.com/photo-1505142468610-359e7d316be0?w=600",
+      "recommendedBrightness": 0.3,
+      "isFree": true,
+      "sortOrder": 6,
+      "tags": ["집중", "고요", "하늘"],
+      "playCount": 0
+    }
+  ]
+}

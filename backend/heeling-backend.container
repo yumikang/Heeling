@@ -1,0 +1,38 @@
+[Unit]
+Description=Heeling Backend API Server
+After=network-online.target
+Wants=network-online.target
+
+[Container]
+Image=ghcr.io/blee/heeling-backend:latest
+ContainerName=heeling-backend
+AutoUpdate=registry
+
+# Environment
+EnvironmentFile=/root/heeling/backend/.env
+
+# Network
+PublishPort=3000:3000
+Network=heeling-net
+
+# Health check
+HealthCmd=/usr/bin/curl -f http://localhost:3000/api/health || exit 1
+HealthInterval=30s
+HealthTimeout=10s
+HealthRetries=3
+HealthStartPeriod=40s
+
+# Volumes for persistent data
+Volume=/root/heeling/uploads:/app/uploads:Z
+Volume=/root/heeling/tracks:/app/public/tracks:Z
+
+# Resource limits
+PodmanArgs=--memory=512m --cpus=1
+
+[Service]
+Restart=always
+RestartSec=10
+TimeoutStartSec=300
+
+[Install]
+WantedBy=multi-user.target default.target

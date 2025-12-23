@@ -1,0 +1,582 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model AdImpression {
+  id               String     @id @default(cuid())
+  userId           String?
+  adUnitId         String
+  adType           AdType
+  adProvider       AdProvider
+  impressionTime   DateTime   @default(now())
+  clicked          Boolean    @default(false)
+  completed        Boolean    @default(false)
+  skipped          Boolean    @default(false)
+  estimatedRevenue Float?
+  deviceType       String?
+  user             User?      @relation(fields: [userId], references: [id])
+
+  @@index([adType, impressionTime])
+  @@index([userId, impressionTime(sort: Desc)])
+}
+
+model Admin {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  passwordHash String
+  name         String?
+  role         AdminRole @default(ADMIN)
+  isActive     Boolean   @default(true)
+  lastLoginAt  DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@index([email])
+}
+
+model Banner {
+  id              String     @id @default(cuid())
+  type            BannerType
+  title           String
+  subtitle        String?
+  imageUrl        String
+  linkType        String?
+  linkTarget      String?
+  backgroundColor String?
+  sortOrder       Int        @default(0)
+  isActive        Boolean    @default(true)
+  startDate       DateTime?
+  endDate         DateTime?
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+
+  @@index([sortOrder])
+  @@index([startDate, endDate])
+  @@index([type, isActive])
+}
+
+model BusinessSchedule {
+  id          String   @id @default(cuid())
+  userId      String
+  name        String?
+  timeSlot    TimeSlot
+  startTime   String
+  endTime     String?
+  playlistId  String
+  volumeLevel Int      @default(50)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  playlist    Playlist @relation(fields: [playlistId], references: [id])
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, timeSlot])
+  @@index([userId, isActive])
+}
+
+model Category {
+  id           String        @id @default(cuid())
+  slug         String        @unique
+  name         String
+  description  String?
+  icon         String
+  color        String
+  sortOrder    Int           @default(0)
+  isActive     Boolean       @default(true)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  vpsSchedules VpsSchedule[]
+
+  @@index([isActive])
+  @@index([sortOrder])
+}
+
+model Favorite {
+  id        String   @id @default(cuid())
+  userId    String
+  trackId   String
+  createdAt DateTime @default(now())
+  track     Track    @relation(fields: [trackId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, trackId])
+  @@index([userId])
+}
+
+model HomeSection {
+  id               String            @id @default(cuid())
+  type             HomeSectionType
+  title            String?
+  subtitle         String?
+  sortOrder        Int               @default(0)
+  isVisible        Boolean           @default(true)
+  showMoreButton   Boolean           @default(false)
+  moreButtonTarget String?
+  config           Json?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  items            HomeSectionItem[]
+
+  @@index([isVisible])
+  @@index([sortOrder])
+}
+
+model HomeSectionItem {
+  id          String      @id @default(cuid())
+  sectionId   String
+  itemType    String
+  itemId      String?
+  sortOrder   Int         @default(0)
+  config      Json?
+  createdAt   DateTime    @default(now())
+  section     HomeSection @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+
+  @@index([sectionId, sortOrder])
+}
+
+model Page {
+  id          String     @id @default(cuid())
+  slug        String     @unique
+  title       String
+  content     String
+  type        PageType   @default(NOTICE)
+  status      PageStatus @default(DRAFT)
+  publishedAt DateTime?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@index([slug])
+  @@index([type, status])
+}
+
+model PlayHistory {
+  id             String   @id @default(cuid())
+  userId         String
+  trackId        String
+  playedAt       DateTime @default(now())
+  completionRate Float    @default(0)
+  listenDuration Int?
+  deviceType     String?
+  wasAdShown     Boolean  @default(false)
+  track          Track    @relation(fields: [trackId], references: [id], onDelete: Cascade)
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([trackId])
+  @@index([userId, playedAt(sort: Desc)])
+}
+
+model Playlist {
+  id               String             @id @default(cuid())
+  name             String
+  description      String?
+  coverImage       String?
+  type             PlaylistType       @default(MANUAL)
+  theme            String?
+  timeSlot         TimeSlot?
+  targetUserType   UserType?
+  targetOccupation String?
+  targetBusiness   String?
+  playCount        Int                @default(0)
+  isPublic         Boolean            @default(true)
+  isFeatured       Boolean            @default(false)
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  businessSchedules BusinessSchedule[]
+  tracks            PlaylistTrack[]
+
+  @@index([theme])
+  @@index([type, isPublic])
+}
+
+model PlaylistTrack {
+  id         String   @id @default(cuid())
+  playlistId String
+  trackId    String
+  position   Int
+  addedAt    DateTime @default(now())
+  playlist   Playlist @relation(fields: [playlistId], references: [id], onDelete: Cascade)
+  track      Track    @relation(fields: [trackId], references: [id], onDelete: Cascade)
+
+  @@unique([playlistId, trackId])
+  @@index([playlistId, position])
+}
+
+model Popup {
+  id             String    @id @default(cuid())
+  type           PopupType @default(POPUP)
+  title          String
+  content        String?
+  imageUrl       String?
+  linkType       String?
+  linkTarget     String?
+  targetUserType UserType?
+  priority       Int       @default(0)
+  showOnce       Boolean   @default(false)
+  isActive       Boolean   @default(true)
+  startDate      DateTime?
+  endDate        DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@index([priority])
+  @@index([startDate, endDate])
+  @@index([type, isActive])
+}
+
+model PushHistory {
+  id           String         @id @default(cuid())
+  title        String
+  body         String
+  targetType   PushTargetType
+  targetValue  String?
+  imageUrl     String?
+  linkType     String?
+  linkTarget   String?
+  sentCount    Int            @default(0)
+  successCount Int            @default(0)
+  failCount    Int            @default(0)
+  status       PushStatus     @default(PENDING)
+  scheduledAt  DateTime?
+  sentAt       DateTime?
+  createdAt    DateTime       @default(now())
+  createdBy    String?
+
+  @@index([status, createdAt])
+  @@index([targetType])
+}
+
+model Subscription {
+  id                   String             @id @default(cuid())
+  userId               String
+  planType             SubscriptionTier
+  status               SubscriptionStatus
+  startedAt            DateTime           @default(now())
+  expiresAt            DateTime
+  canceledAt           DateTime?
+  stripeSubscriptionId String?            @unique
+  stripeCustomerId     String?
+  stripePriceId        String?
+  amount               Float
+  currency             String             @default("USD")
+  createdAt            DateTime           @default(now())
+  user                 User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([stripeCustomerId])
+  @@index([userId, status])
+}
+
+model SystemSetting {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([key])
+}
+
+model Tombstone {
+  id         String   @id @default(cuid())
+  entityType String
+  entityId   String
+  deletedAt  DateTime @default(now())
+
+  @@index([entityType, deletedAt])
+}
+
+model Track {
+  id             String          @id @default(cuid())
+  title          String
+  artist         String?         @default("Heeling")
+  composer       String?         @default("Heeling Studio")
+  createdWith    String?         @default("Suno AI")
+  fileUrl        String
+  thumbnailUrl   String?
+  duration       Int
+  fileSize       Int?
+  bpm            Int?
+  category       String?
+  tags           String[]
+  mood           String?
+  occupationTags String[]
+  businessTags   String[]
+  timeSlotTags   String[]
+  playCount      Int             @default(0)
+  likeCount      Int             @default(0)
+  isActive       Boolean         @default(true)
+  sortOrder      Int?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  favorites      Favorite[]
+  playHistories  PlayHistory[]
+  playlistTracks PlaylistTrack[]
+
+  @@index([category])
+  @@index([isActive])
+  @@index([playCount(sort: Desc)])
+}
+
+model User {
+  id                  String             @id @default(cuid())
+  email               String?            @unique
+  name                String?
+  passwordHash        String?
+  provider            AuthProvider       @default(GUEST)
+  providerId          String?
+  userType            UserType           @default(PERSONAL)
+  occupation          String?
+  businessType        String?
+  preferredThemes     String[]
+  subscriptionTier    SubscriptionTier   @default(FREE)
+  subscriptionEndDate DateTime?
+  adFreeUntil         DateTime?
+  onboardingCompleted Boolean            @default(false)
+  createdAt           DateTime           @default(now())
+  updatedAt           DateTime           @updatedAt
+  adImpressions       AdImpression[]
+  businessSchedules   BusinessSchedule[]
+  favorites           Favorite[]
+  playHistories       PlayHistory[]
+  subscriptions       Subscription[]
+  vpsSchedules        VpsSchedule[]
+
+  @@index([subscriptionTier, subscriptionEndDate])
+  @@index([userType])
+  @@index([provider, providerId])
+}
+
+enum AuthProvider {
+  GUEST
+  APPLE
+  GOOGLE
+}
+
+enum AdProvider {
+  ADMOB
+  META
+}
+
+enum AdType {
+  AUDIO
+  BANNER
+  REWARDED
+}
+
+enum AdminRole {
+  SUPER_ADMIN
+  ADMIN
+}
+
+enum BannerType {
+  HERO
+  PROMOTION
+  EVENT
+  NOTICE
+}
+
+enum HomeSectionType {
+  HERO_BANNER
+  TRACK_CAROUSEL
+  ICON_MENU
+  BANNER
+  TRACK_LIST
+  FEATURED_TRACK
+  RECENTLY_PLAYED
+  SPACER
+}
+
+enum PageStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum PageType {
+  NOTICE
+  EVENT
+  POLICY
+  FAQ
+  GUIDE
+}
+
+enum PlaylistType {
+  MANUAL
+  AUTO_GENERATED
+  BUSINESS_TEMPLATE
+  THEME
+}
+
+enum PopupType {
+  POPUP
+  FULLSCREEN
+  BOTTOM_SHEET
+  NOTICE
+  EVENT
+}
+
+enum PushStatus {
+  PENDING
+  SCHEDULED
+  SENDING
+  COMPLETED
+  FAILED
+}
+
+enum PushTargetType {
+  ALL
+  PERSONAL
+  BUSINESS
+  TOPIC
+  USER
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  CANCELED
+  EXPIRED
+  PAST_DUE
+  TRIALING
+}
+
+enum SubscriptionTier {
+  FREE
+  PREMIUM
+  BUSINESS
+}
+
+enum TimeSlot {
+  MORNING
+  AFTERNOON
+  EVENING
+  NIGHT
+}
+
+enum UserType {
+  PERSONAL
+  BUSINESS
+  GUEST
+}
+
+// App Configuration - key-value store for app settings
+model AppConfig {
+  key       String   @id
+  value     String
+  category  String   @default("general")
+  updatedAt DateTime @updatedAt
+
+  @@index([category])
+}
+
+// Music Generation Preset - styleCode + moodCode 조합별 Suno 프롬프트 설정
+model MusicPreset {
+  id                      String   @id @default(cuid())
+
+  // UI에서 선택하는 코드
+  styleCode               String   // "piano", "nature", "meditation", "sleep", "focus", "cafe", "classical", "lofi"
+  moodCode                String   // "calm", "dreamy", "focus", "melancholy", "uplifting"
+
+  // 관리용 코드 & 이름
+  code                    String   @unique // "piano_calm", "nature_dreamy" 등
+  name                    String            // "피아노 - 평온"
+
+  // Suno에 넘길 최종 프롬프트 (핵심!)
+  stylePrompt             String   // "Ambient, relaxing piano, soft reverb, peaceful, instrumental, no vocals"
+
+  // 기본값: 악기 연주만
+  instrumentalDefault     Boolean  @default(true)
+
+  // 자동 생성(배치)에서 사용할지, 가중치
+  autoEnabled             Boolean  @default(true)
+  weight                  Int      @default(1)
+
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+
+  @@unique([styleCode, moodCode])
+  @@index([autoEnabled])
+  @@index([styleCode])
+  @@index([moodCode])
+}
+
+// Generation Task - Suno 음악 생성 작업 추적 (자동 배포용)
+model GenerationTask {
+  id            String   @id @default(cuid())
+  scheduleId    String?  // 어떤 스케줄에서 생성되었는지
+  taskId        String   // Suno taskId (unique 제거: 1회 호출로 2트랙 생성되므로 2개 Task가 같은 taskId 공유)
+  trackIndex    Int      @default(0) // 0 or 1 (Suno는 2트랙 반환, 각 트랙별로 구분)
+
+  // 생성 메타데이터
+  title         String
+  style         String?
+  mood          String?
+
+  // 상태 추적 (staged status flow)
+  status        GenerationStatus @default(PENDING)
+  retryCount    Int      @default(0)
+  maxRetries    Int      @default(3)
+
+  // Suno 원본 URL (재시도용 보존)
+  sunoAudioUrl  String?
+  sunoImageUrl  String?
+  sunoVideoUrl  String?
+
+  // Firebase 배포 후 최종 URL
+  audioUrl      String?
+  imageUrl      String?
+
+  // Imagen으로 생성된 커버 이미지 (로컬 경로)
+  generatedCoverUrl String?
+
+  // 음악 메타데이터
+  duration      Int?     // 초 단위
+
+  // 타임스탬프
+  lastCheckedAt DateTime?
+  failedAt      DateTime?
+  error         String?  @db.Text
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // 자동 배포 플래그
+  autoDeploy    Boolean  @default(false)
+
+  @@unique([taskId, trackIndex]) // taskId + trackIndex 조합이 unique (같은 taskId로 2개 트랙 처리)
+  @@index([status, lastCheckedAt])
+  @@index([scheduleId])
+  @@index([createdAt])
+}
+
+enum GenerationStatus {
+  PENDING      // Suno API 호출 완료, taskId 받음
+  GENERATING   // Suno에서 생성 중
+  GENERATED    // Suno 생성 완료, URL 확인됨
+  DOWNLOADING  // Firebase 업로드 중
+  DEPLOYING    // Music 테이블 삽입 중
+  DEPLOYED     // 완료
+  FAILED       // 실패 (maxRetries 초과)
+}
+
+// VPS 자동 스케줄 생성 시스템
+model VpsSchedule {
+  id               String    @id @default(cuid())
+  userId           String
+  categoryId       String
+  scheduledTime    DateTime  // 생성 예정 시간
+  isGenerated      Boolean   @default(false)
+  lastGeneratedAt  DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@index([scheduledTime, isGenerated])
+  @@index([userId])
+  @@index([categoryId])
+}
