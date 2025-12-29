@@ -32,17 +32,16 @@ export const DEFAULT_TEMPLATES: Template[] = [
   },
 ];
 
-// 스타일 옵션
+// 스타일 옵션 (프리셋과 동일하게 유지)
 export const STYLES = [
   { value: 'piano', label: '피아노' },
-  { value: 'nature', label: '자연' },
+  { value: 'cinema', label: '시네마' },
   { value: 'meditation', label: '명상' },
   { value: 'sleep', label: '수면' },
   { value: 'focus', label: '집중' },
   { value: 'cafe', label: '카페' },
   { value: 'classical', label: '클래식' },
   { value: 'lofi', label: '로파이' },
-  { value: 'cinema', label: '시네마' },
 ];
 
 // 분위기 옵션

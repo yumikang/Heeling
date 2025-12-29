@@ -24,6 +24,17 @@ import {
   TrackListSection,
 } from '../types/home';
 
+// 배너 로컬 이미지
+const bannerImages = {
+  sleep: require('../../assets/images/sleep.webp'),
+  focus: require('../../assets/images/focus.webp'),
+  piano: require('../../assets/images/piano.webp'),
+  cafe: require('../../assets/images/cafe.webp'),
+};
+
+// 앱 아이콘 (fallback용)
+export const appIcon = require('../../assets/images/app-icon.png');
+
 // 히어로 배너 데이터 (기본값 - 백엔드 API에서 동적 로드)
 const heroBannerSection: HeroBannerSection = {
   id: 'hero_banner_main',
@@ -36,33 +47,33 @@ const heroBannerSection: HeroBannerSection = {
         id: 'banner_1',
         title: '깊은 수면을 위한\n힐링 사운드',
         subtitle: '오늘 밤, 편안한 잠자리',
-        imageUrl: 'https://images.unsplash.com/photo-1507400492013-162706c8c05e?w=800',
+        imageUrl: bannerImages.sleep,
         backgroundColor: '#1a2f4a',
-        action: { type: 'playlist', target: 'playlist_sleep_healing' },
+        action: { type: 'filter', target: 'sleep' },
       },
       {
         id: 'banner_2',
         title: '집중력 향상\n포커스 뮤직',
         subtitle: '업무 효율을 높이는 음악',
-        imageUrl: 'https://images.unsplash.com/photo-1497032628192-86f99bcd76bc?w=800',
+        imageUrl: bannerImages.focus,
         backgroundColor: '#2d3a2f',
-        action: { type: 'playlist', target: 'playlist_focus_music' },
+        action: { type: 'filter', target: 'focus' },
       },
       {
         id: 'banner_3',
-        title: '자연의 소리로\n마음의 평화',
-        subtitle: '숲, 비, 파도 소리',
-        imageUrl: 'https://images.unsplash.com/photo-1448375240586-882707db888b?w=800',
+        title: '아름다운 피아노 선율로\n마음의 평화',
+        subtitle: '감성적인 피아노 음악',
+        imageUrl: bannerImages.piano,
         backgroundColor: '#1f3d2a',
-        action: { type: 'playlist', target: 'playlist_nature_sounds' },
+        action: { type: 'filter', target: 'piano' },
       },
       {
         id: 'banner_4',
         title: '여유로운 카페에서\n흐르는 음악처럼',
         subtitle: '일상에 감성을 더하는 BGM',
-        imageUrl: 'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=800',
+        imageUrl: bannerImages.cafe,
         backgroundColor: '#3d2f1f',
-        action: { type: 'playlist', target: 'playlist_cafe_bgm' },
+        action: { type: 'filter', target: 'cafe' },
       },
     ],
     autoScrollInterval: 5000,
@@ -88,7 +99,7 @@ const recommendedSection: TrackCarouselSection = {
   },
 };
 
-// 테마 카테고리 아이콘 메뉴
+// 테마 카테고리 아이콘 메뉴 (프리셋 스타일과 1:1 매칭 - 8개)
 const iconMenuSection: IconMenuSection = {
   id: 'theme_categories',
   type: 'icon_menu',
@@ -98,34 +109,62 @@ const iconMenuSection: IconMenuSection = {
     items: [
       {
         id: 'piano',
-        name: '피아노 선율',
+        name: '피아노',
         icon: 'musical-note',
         color: '#6B7FD7',
         action: { type: 'filter', target: 'piano' },
       },
       {
-        id: 'cafe',
-        name: '카페 BGM',
-        icon: 'cafe',
-        color: '#D4A574',
-        action: { type: 'filter', target: 'cafe' },
+        id: 'cinema',
+        name: '시네마',
+        icon: 'film',
+        color: '#E8A0BF',
+        action: { type: 'filter', target: 'cinema' },
       },
       {
-        id: 'healing',
-        name: '힐링 & 명상',
+        id: 'meditation',
+        name: '명상',
         icon: 'leaf',
         color: '#7CB98F',
         action: { type: 'filter', target: 'meditation' },
       },
       {
-        id: 'cinema',
-        name: '시네마 무드',
-        icon: 'film',
-        color: '#E8A0BF',
-        action: { type: 'filter', target: 'cinema' },
+        id: 'sleep',
+        name: '수면',
+        icon: 'moon',
+        color: '#3B82F6',
+        action: { type: 'filter', target: 'sleep' },
+      },
+      {
+        id: 'focus',
+        name: '집중',
+        icon: 'brain',
+        color: '#8B5CF6',
+        action: { type: 'filter', target: 'focus' },
+      },
+      {
+        id: 'cafe',
+        name: '카페',
+        icon: 'cafe',
+        color: '#D4A574',
+        action: { type: 'filter', target: 'cafe' },
+      },
+      {
+        id: 'classical',
+        name: '클래식',
+        icon: 'musical-notes',
+        color: '#9CA3AF',
+        action: { type: 'filter', target: 'classical' },
+      },
+      {
+        id: 'lofi',
+        name: '로파이',
+        icon: 'headset',
+        color: '#F472B6',
+        action: { type: 'filter', target: 'lofi' },
       },
     ],
-    showAddButton: true,
+    showAddButton: false,
     columns: 4,
   },
 };

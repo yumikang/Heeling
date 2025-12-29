@@ -4,7 +4,8 @@ import { verifyAuth } from '@/lib/auth-edge';
 import { writeFile, mkdir, readFile } from 'fs/promises';
 import path from 'path';
 import { parseBuffer } from 'music-metadata';
-import { addTrackToMatchingPlaylists } from '@/lib/playlist-mapper';
+// MVP: Playlist 매핑 비활성화 - Category 기반으로 운영
+// import { addTrackToMatchingPlaylists } from '@/lib/playlist-mapper';
 
 interface DeployTrack {
   id: string;
@@ -178,16 +179,17 @@ export async function POST(request: NextRequest) {
             },
           });
 
-          // Auto-add to matching playlists based on style and mood
-          const playlistResult = await addTrackToMatchingPlaylists(
-            newTrack.id,
-            track.style,
-            track.mood
-          );
-
-          if (playlistResult.playlistsAdded > 0) {
-            console.log(`[Deploy] Added to playlists: ${playlistResult.playlistNames.join(', ')}`);
-          }
+          // MVP: Playlist 매핑 비활성화 - Track.category 필드로 분류
+          // 출시 후 Playlist 도입 시 아래 코드 활성화
+          // const playlistResult = await addTrackToMatchingPlaylists(
+          //   newTrack.id,
+          //   track.style,
+          //   track.mood
+          // );
+          // if (playlistResult.playlistsAdded > 0) {
+          //   console.log(`[Deploy] Added to playlists: ${playlistResult.playlistNames.join(', ')}`);
+          // }
+          console.log(`[Deploy] Track category set to: ${newTrack.category}`);
 
           results.push({
             success: true,

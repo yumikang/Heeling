@@ -1,3 +1,12 @@
+/**
+ * MVP: Playlist 매핑 비활성화
+ *
+ * 현재 전략: Category 기반 자동 노출만으로 홈/탐색/재생을 구성
+ * Playlist(수동 큐레이션) 기능은 출시 후 데이터를 보고 도입 여부를 결정
+ *
+ * @see docs/MVP-RULES.md
+ */
+
 import { prisma } from './prisma';
 
 // Mapping format: { "style_mood": ["playlistId1", "playlistId2", ...] }

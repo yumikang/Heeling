@@ -11,12 +11,12 @@ const DEFAULT_PRESETS = [
   { styleCode: 'piano', moodCode: 'melancholy', name: '피아노 - 서정', stylePrompt: 'Melancholic piano, emotional melody, gentle sadness, tender notes, expressive dynamics, instrumental' },
   { styleCode: 'piano', moodCode: 'uplifting', name: '피아노 - 희망', stylePrompt: 'Uplifting piano, hopeful melody, bright major key, inspiring progression, warm and positive, instrumental' },
 
-  // 자연 스타일
-  { styleCode: 'nature', moodCode: 'calm', name: '자연 - 평온', stylePrompt: 'Nature sounds, gentle streams, bird songs, forest ambience, peaceful environment, organic textures, no vocals' },
-  { styleCode: 'nature', moodCode: 'dreamy', name: '자연 - 몽환', stylePrompt: 'Ethereal nature, mystical forest, distant bird calls, ambient water sounds, dreamy atmosphere, organic ambient' },
-  { styleCode: 'nature', moodCode: 'focus', name: '자연 - 집중', stylePrompt: 'Steady rain sounds, focused ambience, white noise nature, concentration background, minimal nature sounds' },
-  { styleCode: 'nature', moodCode: 'melancholy', name: '자연 - 서정', stylePrompt: 'Autumn winds, gentle rain, nostalgic nature sounds, melancholic atmosphere, organic sadness' },
-  { styleCode: 'nature', moodCode: 'uplifting', name: '자연 - 희망', stylePrompt: 'Sunrise ambience, morning birds, fresh forest sounds, hopeful dawn atmosphere, uplifting nature' },
+  // 시네마 스타일
+  { styleCode: 'cinema', moodCode: 'calm', name: '시네마 - 평온', stylePrompt: 'Cinematic ambient, gentle orchestral pads, film score atmosphere, peaceful soundtrack, emotional strings, instrumental' },
+  { styleCode: 'cinema', moodCode: 'dreamy', name: '시네마 - 몽환', stylePrompt: 'Dreamy film score, ethereal orchestra, fantasy movie atmosphere, magical soundtrack, floating strings, cinematic wonder' },
+  { styleCode: 'cinema', moodCode: 'focus', name: '시네마 - 집중', stylePrompt: 'Minimal cinematic, focused soundtrack, tension building, subtle orchestra, concentrated film music, atmospheric score' },
+  { styleCode: 'cinema', moodCode: 'melancholy', name: '시네마 - 서정', stylePrompt: 'Emotional film score, melancholic orchestra, dramatic strings, tender piano, heartfelt soundtrack, cinematic sadness' },
+  { styleCode: 'cinema', moodCode: 'uplifting', name: '시네마 - 희망', stylePrompt: 'Uplifting film score, inspiring orchestra, heroic themes, triumphant brass, hopeful strings, epic cinematic' },
 
   // 명상 스타일
   { styleCode: 'meditation', moodCode: 'calm', name: '명상 - 평온', stylePrompt: 'Meditation music, tibetan singing bowls, deep om drone, peaceful chanting, slow tempo, spiritual calm, no vocals' },

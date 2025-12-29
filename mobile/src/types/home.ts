@@ -35,10 +35,10 @@ export interface HeroBannerItem {
   id: string;
   title: string;
   subtitle?: string;
-  imageUrl: string;
+  imageUrl: string | number; // string: URL, number: require() 로컬 이미지
   backgroundColor: string;
   action?: {
-    type: 'navigate' | 'track' | 'link' | 'playlist';
+    type: 'navigate' | 'track' | 'link' | 'playlist' | 'filter';
     target: string;
   };
 }

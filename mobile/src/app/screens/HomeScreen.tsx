@@ -272,8 +272,9 @@ const HomeScreen: React.FC = () => {
         subtitle: banner.subtitle || undefined,
         imageUrl: toFullUrl(banner.imageUrl),
         backgroundColor: banner.backgroundColor || '#1a2f4a',
-        action: banner.linkType === 'playlist' && banner.linkTarget
-          ? { type: 'playlist' as const, target: banner.linkTarget }
+        // MVP: filter(카테고리) 우선, playlist는 출시 후
+        action: banner.linkType && banner.linkTarget
+          ? { type: banner.linkType as 'filter' | 'playlist', target: banner.linkTarget }
           : undefined,
       })),
       autoScrollInterval: 5000,
@@ -488,7 +489,15 @@ const HomeScreen: React.FC = () => {
       case 'premium':
         navigation.navigate('Premium');
         break;
+      case 'filter':
+        // MVP: Category 기반 - Library 화면으로 카테고리 필터와 함께 이동
+        navigation.navigate('MainTabs', {
+          screen: 'Library',
+          params: { category: action.target },
+        } as any);
+        break;
       case 'playlist':
+        // 출시 후 Playlist 도입 시 활성화
         navigation.navigate('Playlist', { playlistId: action.target });
         break;
       case 'track':

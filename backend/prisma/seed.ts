@@ -74,8 +74,8 @@ async function main() {
       fileUrl: '/audio/Dreams in Slow Motion.mp3',
       thumbnailUrl: '',
       duration: 152,
-      category: 'healing',
-      tags: ['힐링', '느림', '평화'],
+      category: 'piano',
+      tags: ['피아노', '느림', '평화'],
       mood: 'calm',
       playCount: 1250,
       likeCount: 89,
@@ -130,8 +130,8 @@ async function main() {
       fileUrl: '/audio/Still as the Sky.mp3',
       thumbnailUrl: '',
       duration: 153,
-      category: 'nature',
-      tags: ['자연', '하늘', '고요'],
+      category: 'cinema',
+      tags: ['시네마', '하늘', '고요'],
       mood: 'calm',
       playCount: 890,
       likeCount: 67,
@@ -272,13 +272,16 @@ async function main() {
   // ==========================================
   await prisma.category.deleteMany()
 
+  // 프리셋 스타일과 1:1 매칭되는 카테고리 (8개)
   const categories = [
-    { slug: 'healing', name: '힐링', description: '마음을 편안하게 해주는 음악', icon: 'heart', color: '#EC4899' },
-    { slug: 'focus', name: '집중', description: '업무와 공부에 집중할 수 있는 음악', icon: 'brain', color: '#8B5CF6' },
+    { slug: 'piano', name: '피아노', description: '아름다운 피아노 선율', icon: 'musical-note', color: '#6B7FD7' },
+    { slug: 'cinema', name: '시네마', description: '영화 같은 감동적인 사운드트랙', icon: 'film', color: '#E8A0BF' },
+    { slug: 'meditation', name: '명상', description: '마음챙김을 위한 명상 음악', icon: 'leaf', color: '#7CB98F' },
     { slug: 'sleep', name: '수면', description: '편안한 잠을 위한 음악', icon: 'moon', color: '#3B82F6' },
-    { slug: 'nature', name: '자연', description: '자연의 소리와 함께하는 음악', icon: 'tree', color: '#10B981' },
-    { slug: 'cafe', name: '카페', description: '아늑한 카페 분위기의 음악', icon: 'coffee', color: '#F59E0B' },
-    { slug: 'meditation', name: '명상', description: '마음챙김을 위한 명상 음악', icon: 'spa', color: '#6366F1' },
+    { slug: 'focus', name: '집중', description: '업무와 공부에 집중할 수 있는 음악', icon: 'brain', color: '#8B5CF6' },
+    { slug: 'cafe', name: '카페', description: '아늑한 카페 분위기의 음악', icon: 'cafe', color: '#D4A574' },
+    { slug: 'classical', name: '클래식', description: '우아한 클래식 음악', icon: 'musical-notes', color: '#9CA3AF' },
+    { slug: 'lofi', name: '로파이', description: '편안한 로파이 비트', icon: 'headset', color: '#F472B6' },
   ]
 
   for (let i = 0; i < categories.length; i++) {
