@@ -67,8 +67,8 @@ export const PopupService = {
       return [];
     } catch (error) {
       console.error('Failed to fetch popups:', error);
-      // 서버 연결 실패 시 목 데이터로 폴백
-      return this.getMockPopups();
+      // 서버 연결 실패 시 팝업 없음 (배포용: 목 데이터 폴백 제거)
+      return [];
     }
   },
 
@@ -173,100 +173,6 @@ export const PopupService = {
     }
   },
 
-  /**
-   * 개발용 목 데이터
-   */
-  getMockPopups(): PopupData[] {
-    return [
-      // 전체화면 팝업 예시 (신규 기능 안내) - 테스트용으로 비활성화
-      /* {
-        id: 'fullscreen_new_feature_001',
-        type: 'fullscreen',
-        title: '새로운 수면 트랙 출시!',
-        message: '깊은 수면을 위한 새로운 자연 소리 트랙을 만나보세요.',
-        imageUrl: 'https://picsum.photos/400/600',
-        backgroundColor: '#1a1a2e',
-        buttons: [
-          {
-            id: 'btn_explore',
-            label: '지금 들어보기',
-            action: 'screen',
-            value: 'Library',
-            style: 'primary',
-          },
-          {
-            id: 'btn_later',
-            label: '나중에',
-            action: 'dismiss',
-            style: 'text',
-          },
-        ],
-        showOnce: true,
-        priority: 100,
-        dismissible: false,
-        fullscreenOptions: {
-          showCloseButton: true,
-          closeButtonDelay: 3, // 3초 후 닫기 버튼 표시
-        },
-      }, */
-      // 일반 모달 팝업 예시 (이벤트 안내)
-      {
-        id: 'modal_event_001',
-        type: 'modal',
-        title: '프리미엄 50% 할인',
-        message: '이번 주말까지만! 프리미엄 구독을 50% 할인된 가격에 만나보세요.',
-        imageUrl: 'https://picsum.photos/300/200',
-        buttons: [
-          {
-            id: 'btn_premium',
-            label: '자세히 보기',
-            action: 'screen',
-            value: 'Premium',
-            style: 'primary',
-          },
-          {
-            id: 'btn_close',
-            label: '닫기',
-            action: 'dismiss',
-            style: 'secondary',
-          },
-        ],
-        showOnce: false, // 매번 표시
-        showDontShowAgain: true, // "다시 보지 않기" 버튼 표시
-        excludePremium: true, // 프리미엄 사용자에게는 표시 안 함
-        priority: 50,
-        dismissible: true,
-        startDate: '2024-01-01T00:00:00Z',
-        endDate: '2025-12-31T23:59:59Z',
-      },
-      // 특정 사용자 타입 대상 팝업 - 테스트용으로 비활성화
-      /* {
-        id: 'modal_business_001',
-        type: 'modal',
-        title: '비즈니스 전용 BGM 패키지',
-        message: '카페, 매장에 어울리는 프리미엄 BGM 패키지를 확인해보세요.',
-        buttons: [
-          {
-            id: 'btn_check',
-            label: '패키지 보기',
-            action: 'link',
-            value: 'https://heeling.app/business',
-            style: 'primary',
-          },
-          {
-            id: 'btn_skip',
-            label: '건너뛰기',
-            action: 'dismiss',
-            style: 'text',
-          },
-        ],
-        showOnce: true,
-        targetUserTypes: ['business'],
-        priority: 80,
-        dismissible: true,
-      }, */
-    ];
-  },
 };
 
 export default PopupService;

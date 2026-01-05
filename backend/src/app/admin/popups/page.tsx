@@ -121,13 +121,32 @@ export default function PopupsPage() {
     setIsEditModalOpen(true);
   };
 
+  const handleCreate = () => {
+    const newPopup: PopupData = {
+      id: '',
+      type: 'modal',
+      title: '',
+      message: '',
+      priority: 10,
+      showOnce: false,
+      showDontShowAgain: true,
+      dismissible: true,
+    };
+    setEditingPopup(newPopup);
+    setIsEditModalOpen(true);
+  };
+
   const handleSave = async () => {
     if (!editingPopup) return;
 
     setIsSaving(true);
     try {
-      const response = await fetch(`/api/admin/popups/${editingPopup.id}`, {
-        method: 'PUT',
+      const isNew = !editingPopup.id;
+      const url = isNew ? '/api/admin/popups' : `/api/admin/popups/${editingPopup.id}`;
+      const method = isNew ? 'POST' : 'PUT';
+
+      const response = await fetch(url, {
+        method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(editingPopup),
       });
@@ -135,11 +154,15 @@ export default function PopupsPage() {
       const result = await response.json();
 
       if (result.success) {
-        // 목록 업데이트
-        setPopups(popups.map(p => p.id === editingPopup.id ? result.data : p));
+        if (isNew) {
+          setPopups([...popups, result.data]);
+          alert('팝업이 생성되었습니다.');
+        } else {
+          setPopups(popups.map(p => p.id === editingPopup.id ? result.data : p));
+          alert('팝업이 수정되었습니다.');
+        }
         setIsEditModalOpen(false);
         setEditingPopup(null);
-        alert('팝업이 수정되었습니다.');
       } else {
         alert(result.error || '팝업 저장에 실패했습니다.');
       }
@@ -349,7 +372,10 @@ export default function PopupsPage() {
           <h2 className="text-3xl font-bold text-white">팝업 관리</h2>
           <p className="text-gray-400 mt-2">모바일 앱 팝업을 용도별로 관리합니다</p>
         </div>
-        <button className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg flex items-center gap-2 font-medium transition-colors">
+        <button
+          onClick={handleCreate}
+          className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg flex items-center gap-2 font-medium transition-colors"
+        >
           <Plus size={20} />
           새 팝업 추가
         </button>
@@ -471,7 +497,9 @@ export default function PopupsPage() {
           <div className="bg-gray-900 rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             {/* 모달 헤더 */}
             <div className="flex items-center justify-between p-6 border-b border-gray-800">
-              <h3 className="text-xl font-semibold text-white">팝업 편집</h3>
+              <h3 className="text-xl font-semibold text-white">
+                {editingPopup.id ? '팝업 편집' : '새 팝업 추가'}
+              </h3>
               <button
                 onClick={() => setIsEditModalOpen(false)}
                 className="p-2 text-gray-400 hover:text-white hover:bg-gray-800 rounded transition-colors"
@@ -482,19 +510,6 @@ export default function PopupsPage() {
 
             {/* 모달 내용 */}
             <div className="p-6 space-y-4">
-              {/* 팝업 타입 */}
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">팝업 타입</label>
-                <select
-                  value={editingPopup.type}
-                  onChange={(e) => setEditingPopup({ ...editingPopup, type: e.target.value })}
-                  className="w-full bg-gray-800 text-white rounded-lg px-4 py-2 border border-gray-700 focus:border-purple-500 focus:outline-none"
-                >
-                  <option value="modal">모달 팝업</option>
-                  <option value="fullscreen">전체화면</option>
-                </select>
-              </div>
-
               {/* 제목 */}
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2">제목</label>

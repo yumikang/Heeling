@@ -23,6 +23,7 @@ interface ModalPopupProps {
   onClose: () => void;
   onButtonPress: (button: PopupButton) => void;
   onDontShowAgain?: () => void;
+  onDismiss?: () => void;
 }
 
 export const ModalPopup: React.FC<ModalPopupProps> = ({
@@ -31,6 +32,7 @@ export const ModalPopup: React.FC<ModalPopupProps> = ({
   onClose,
   onButtonPress,
   onDontShowAgain,
+  onDismiss,
 }) => {
   const handleButtonPress = async (button: PopupButton) => {
     if (button.action === 'link' && button.value) {
@@ -85,6 +87,7 @@ export const ModalPopup: React.FC<ModalPopupProps> = ({
       transparent
       statusBarTranslucent
       onRequestClose={popup.dismissible ? onClose : undefined}
+      onDismiss={onDismiss}
     >
       <TouchableWithoutFeedback onPress={handleBackdropPress}>
         <View style={styles.backdrop}>

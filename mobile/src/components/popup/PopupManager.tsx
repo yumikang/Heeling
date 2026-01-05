@@ -23,13 +23,23 @@ export const PopupManager: React.FC<PopupManagerProps> = ({
   const [popupQueue, setPopupQueue] = useState<PopupData[]>([]);
   const [currentPopup, setCurrentPopup] = useState<PopupData | null>(null);
   const [isVisible, setIsVisible] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
+
+  // 큐 진행 (onDismiss에서 호출)
+  const advanceQueue = useCallback(() => {
+    setPopupQueue((prev) => prev.slice(1));
+    setCurrentPopup(null);
+    setIsClosing(false);
+  }, []);
 
   // 팝업 로드
   useEffect(() => {
     if (!enabled) return;
 
     const loadPopups = async () => {
+      console.log('[PopupManager] Loading popups...', { userType, isPremium });
       const popups = await PopupService.getActivePopups(userType, isPremium);
+      console.log('[PopupManager] Loaded popups:', popups.length, popups);
       if (popups.length > 0) {
         setPopupQueue(popups);
       }
@@ -51,36 +61,20 @@ export const PopupManager: React.FC<PopupManagerProps> = ({
 
   // 팝업 닫기 처리
   const handleClose = useCallback(async () => {
-    if (currentPopup) {
-      // showOnce가 true면 본 것으로 기록
-      if (currentPopup.showOnce) {
-        await PopupService.markPopupAsSeen(currentPopup.id);
-      }
+    if (currentPopup?.showOnce) {
+      await PopupService.markPopupAsSeen(currentPopup.id);
     }
-
+    setIsClosing(true);
     setIsVisible(false);
-
-    // 애니메이션 후 다음 팝업으로
-    setTimeout(() => {
-      setPopupQueue((prev) => prev.slice(1));
-      setCurrentPopup(null);
-    }, 300);
   }, [currentPopup]);
 
   // "다시 보지 않기" 처리
   const handleDontShowAgain = useCallback(async () => {
     if (currentPopup) {
-      // 무조건 본 것으로 기록
       await PopupService.markPopupAsSeen(currentPopup.id);
     }
-
+    setIsClosing(true);
     setIsVisible(false);
-
-    // 애니메이션 후 다음 팝업으로
-    setTimeout(() => {
-      setPopupQueue((prev) => prev.slice(1));
-      setCurrentPopup(null);
-    }, 300);
   }, [currentPopup]);
 
   // 버튼 액션 처리
@@ -136,6 +130,9 @@ export const PopupManager: React.FC<PopupManagerProps> = ({
       onClose={handleClose}
       onButtonPress={handleButtonPress}
       onDontShowAgain={handleDontShowAgain}
+      onDismiss={() => {
+        if (isClosing) advanceQueue();
+      }}
     />
   );
 };
