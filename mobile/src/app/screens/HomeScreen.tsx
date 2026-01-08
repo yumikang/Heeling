@@ -31,6 +31,7 @@ import { useFavoritesStore } from '../../stores';
 import { SectionRenderer } from '../../components';
 import { DEFAULT_HOME_CONFIG, getVisibleSections } from '../../config/homeConfig';
 import { usePlayer, useOfflineMode, useDownload } from '../../hooks';
+import { usePlayerStore } from '../../stores';
 import type { ServerCategory, ServerHomeSection, ServerBanner, ServerHomeSectionItem } from '../../services/HomeService';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -41,6 +42,7 @@ const HomeScreen: React.FC = () => {
   const { playQueue } = usePlayer();
   const { isOfflineMode } = useOfflineMode();
   const { downloadTrack, getDownloadStatus, getDownloadProgress } = useDownload();
+  const currentTrack = usePlayerStore((state) => state.currentTrack);
 
   const [sections, setSections] = useState<HomeSection[]>([]);
   const [recentTracks, setRecentTracks] = useState<Track[]>([]);
@@ -609,8 +611,9 @@ const HomeScreen: React.FC = () => {
           </View>
         )}
 
-        {/* Bottom padding for mini player */}
-        <View style={styles.bottomPadding} />
+        {/* Bottom padding - dynamic based on mini player visibility */}
+        {/* 탭바(85px) + 미니플레이어(60px) = 145px when playing, 탭바만 필요할 때 = 20px */}
+        <View style={{ height: currentTrack ? 80 : 20 }} />
       </ScrollView>
     </SafeAreaView>
   );
@@ -659,9 +662,6 @@ const styles = StyleSheet.create({
     ...Typography.body,
     color: Colors.textSecondary,
     marginTop: Spacing.md,
-  },
-  bottomPadding: {
-    height: 100,
   },
 });
 

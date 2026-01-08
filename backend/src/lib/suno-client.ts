@@ -246,16 +246,19 @@ export class SunoClient {
   }
 }
 
+// Duration hint for consistent track length
+const DURATION_HINT = ', 3-4 minutes long, extended composition';
+
 // Predefined styles for healing music
 export const HEALING_STYLES = {
-  piano: 'Ambient, Relaxing, Piano, Soft, Peaceful',
-  nature: 'Nature Sounds, Ambient, Birds, Water, Forest',
-  meditation: 'Meditation, Tibetan Singing Bowls, Om, Drone, Peaceful',
-  sleep: 'Sleep Music, Delta Waves, Soft, Dreamy, Ambient',
-  focus: 'Lo-fi, Study, Chill, Minimal, Beats',
-  cafe: 'Cafe Jazz, Acoustic, Warm, Cozy, Background',
-  classical: 'Classical, Orchestra, Strings, Emotional, Cinematic',
-  lofi: 'Lo-fi Hip Hop, Chill, Relaxed, Vinyl, Nostalgic',
+  piano: 'Ambient, Relaxing, Piano, Soft, Peaceful' + DURATION_HINT,
+  nature: 'Nature Sounds, Ambient, Birds, Water, Forest' + DURATION_HINT,
+  meditation: 'Meditation, Tibetan Singing Bowls, Om, Drone, Peaceful' + DURATION_HINT,
+  sleep: 'Sleep Music, Delta Waves, Soft, Dreamy, Ambient' + DURATION_HINT,
+  focus: 'Lo-fi, Study, Chill, Minimal, Beats' + DURATION_HINT,
+  cafe: 'Cafe Jazz, Acoustic, Warm, Cozy, Background' + DURATION_HINT,
+  classical: 'Classical, Orchestra, Strings, Emotional, Cinematic' + DURATION_HINT,
+  lofi: 'Lo-fi Hip Hop, Chill, Relaxed, Vinyl, Nostalgic' + DURATION_HINT,
 };
 
 // Generate prompt based on mood and style

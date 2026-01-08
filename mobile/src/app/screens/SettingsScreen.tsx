@@ -45,7 +45,7 @@ const SettingsScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp>();
   const { user, isGuest, logout } = useAuthStore();
   const { userType } = useUserStore();
-  const { brightness, setBrightness } = usePlayerStore();
+  const { brightness, setBrightness, currentTrack } = usePlayerStore();
 
   // Brightness settings state
   const [defaultBrightness, setDefaultBrightness] = React.useState(0.5);
@@ -540,8 +540,8 @@ const SettingsScreen: React.FC = () => {
           </View>
         </View>
 
-        {/* Bottom padding */}
-        <View style={styles.bottomPadding} />
+        {/* Bottom padding - dynamic based on mini player visibility */}
+        <View style={{ height: currentTrack ? 100 : 20 }} />
       </ScrollView>
 
       {/* Language Selection Modal (Bottom Sheet Style) */}
@@ -697,9 +697,6 @@ const styles = StyleSheet.create({
   premiumSubtitle: {
     ...Typography.caption,
     color: Colors.textSecondary,
-  },
-  bottomPadding: {
-    height: 100,
   },
   // Network Settings Styles
   settingGroup: {

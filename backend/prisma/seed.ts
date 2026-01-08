@@ -272,7 +272,8 @@ async function main() {
   // ==========================================
   await prisma.category.deleteMany()
 
-  // 프리셋 스타일과 1:1 매칭되는 카테고리 (8개)
+  // 백엔드 STYLES (constants.ts)와 동기화된 8개 카테고리
+  // 순서: piano, cinema, meditation, sleep, focus, cafe, classical, lofi
   const categories = [
     { slug: 'piano', name: '피아노', description: '아름다운 피아노 선율', icon: 'musical-note', color: '#6B7FD7' },
     { slug: 'cinema', name: '시네마', description: '영화 같은 감동적인 사운드트랙', icon: 'film', color: '#E8A0BF' },

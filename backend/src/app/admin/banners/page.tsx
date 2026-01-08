@@ -535,6 +535,21 @@ export default function BannersPage() {
                       )}
                     </div>
 
+                    <div>
+                      <label className="block text-xs font-medium text-gray-400 mb-1">설명 텍스트</label>
+                      {isEditing ? (
+                        <input
+                          type="text"
+                          value={banner.subtitle || ''}
+                          onChange={(e) => handleFieldChange(banner.id, 'subtitle', e.target.value)}
+                          placeholder="설명 텍스트 (선택)"
+                          className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500"
+                        />
+                      ) : (
+                        <p className="text-gray-400 text-sm">{banner.subtitle || '설명 없음'}</p>
+                      )}
+                    </div>
+
                     {isEditing && (
                       <div>
                         <label className="block text-xs font-medium text-gray-400 mb-1">이미지 변경</label>

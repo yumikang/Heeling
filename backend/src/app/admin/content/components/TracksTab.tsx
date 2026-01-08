@@ -33,14 +33,17 @@ interface Track {
   createdAt: string;
 }
 
+// 백엔드 STYLES (constants.ts)와 동기화된 8개 카테고리
 const CATEGORIES = [
   { value: '', label: '전체 카테고리' },
-  { value: 'healing', label: '힐링' },
-  { value: 'focus', label: '집중' },
-  { value: 'sleep', label: '수면' },
-  { value: 'nature', label: '자연' },
-  { value: 'cafe', label: '카페' },
+  { value: 'piano', label: '피아노' },
+  { value: 'cinema', label: '시네마' },
   { value: 'meditation', label: '명상' },
+  { value: 'sleep', label: '수면' },
+  { value: 'focus', label: '집중' },
+  { value: 'cafe', label: '카페' },
+  { value: 'classical', label: '클래식' },
+  { value: 'lofi', label: '로파이' },
 ];
 
 export default function TracksTab() {
@@ -67,7 +70,7 @@ export default function TracksTab() {
     fileUrl: '',
     thumbnailUrl: '',
     duration: 0,
-    category: 'healing',
+    category: 'piano',
     tags: '',
     mood: '',
     bpm: 0,
@@ -179,7 +182,7 @@ export default function TracksTab() {
           fileUrl: '',
           thumbnailUrl: '',
           duration: 0,
-          category: 'healing',
+          category: 'piano',
           tags: '',
           mood: '',
           bpm: 0,
