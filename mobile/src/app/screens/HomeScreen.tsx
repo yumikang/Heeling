@@ -111,14 +111,22 @@ const HomeScreen: React.FC = () => {
   // 아이콘 이름 매핑 (백엔드 → Ionicons)
   const mapIconName = (backendIcon: string): string => {
     const iconMap: Record<string, string> = {
-      'heart': 'heart',
-      'brain': 'bulb',
+      // 카테고리 아이콘
+      'musical-note': 'musical-note',
+      'musical-notes': 'musical-notes',
+      'film': 'film',
+      'leaf': 'leaf',
       'moon': 'moon',
+      'brain': 'bulb',
+      'cafe': 'cafe',
+      'headset': 'headset',
+      // 레거시 매핑
+      'heart': 'heart',
       'tree': 'leaf',
       'coffee': 'cafe',
       'spa': 'flower',
     };
-    return iconMap[backendIcon] || 'help-circle';
+    return iconMap[backendIcon] || backendIcon;
   };
 
   // 백엔드 카테고리를 IconMenu 섹션으로 변환
