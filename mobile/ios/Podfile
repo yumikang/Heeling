@@ -11,12 +11,13 @@ platform :ios, podfile_properties['ios.deploymentTarget'] || '15.1'
 install! 'cocoapods',
   :deterministic_uuids => false
 
-prepare_react_native_project!
-
-# Firebase Swift pod dependencies
+# Firebase requires modular headers
+pod 'GoogleUtilities', :modular_headers => true
 pod 'FirebaseCore', :modular_headers => true
 pod 'FirebaseCoreInternal', :modular_headers => true
-pod 'GoogleUtilities', :modular_headers => true
+pod 'FirebaseInstallations', :modular_headers => true
+
+prepare_react_native_project!
 
 target 'BRIBI' do
   use_expo_modules!

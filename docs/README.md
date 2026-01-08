@@ -1,145 +1,76 @@
-# Heeling Project Documentation
+# Heeling (BRIBI) 프로젝트 문서
 
-> **Version**: 2.0 (Phase 1 - Local-First MVP)
-> **Last Updated**: 2025-11-26
-
----
-
-## Documentation Structure
-
-```
-docs/
-├── README.md           # 이 파일 (문서 구조 안내)
-├── PRD.md              # Product Requirements Document (현재 버전)
-├── SCREEN_FLOW.md      # 화면 구성 및 네비게이션 플로우
-├── BACKEND_API.md      # Backend API 문서 (Phase 2용)
-└── archive/            # 이전 버전 문서 (참고용)
-    ├── prd.md                  # 이전 PRD v2.0
-    ├── DEVELOPMENT_PLAN.md     # 이전 개발 계획
-    ├── EXECUTIVE_SUMMARY.md    # 이전 요약 문서
-    └── module.md               # React Native 라이브러리 분석
-```
+사람이 읽는 가이드, 절차서, 요구사항 문서입니다.
 
 ---
 
-## Current Phase
+## 문서 목록
 
-### Phase 1: Local-First MVP (현재)
+### 핵심 문서
 
-**목표**: 100% 로컬 기반 기능 구현
-
-| 항목 | 내용 |
+| 파일 | 설명 |
 |------|------|
-| **데이터베이스** | SQLite (로컬) |
-| **콘텐츠** | 번들 에셋 (5-10개 트랙) |
-| **인증** | Apple Sign In + Google Sign In |
-| **결제** | 없음 (Freemium 모델) |
-| **광고** | 없음 |
-| **오프라인** | 완전 지원 |
+| **PRD.md** | 제품 요구사항 문서 |
+| **MVP-RULES.md** | MVP 운영 규칙 및 Scope Freeze |
+| **SCREEN_FLOW.md** | 화면 구성 및 네비게이션 플로우 |
 
-**주요 문서**: [PRD.md](./PRD.md)
+### 개발 환경
 
-### Phase 2: Server Integration (예정)
-
-**목표**: 백엔드 연동 및 확장 기능
-
-| 항목 | 내용 |
+| 파일 | 설명 |
 |------|------|
-| **데이터베이스** | PostgreSQL + SQLite (하이브리드) |
-| **콘텐츠** | 서버 스트리밍 + 로컬 캐시 |
-| **인증** | JWT 토큰 기반 |
-| **결제** | Stripe 연동 |
-| **광고** | AdMob + Meta |
+| **DEV_ENVIRONMENT_SETUP.md** | 개발 환경 설정 가이드 (Xcode, RN 버전 등) |
+| **DEV_LOG.md** | 개발 일지 (시행착오 및 해결 기록) |
 
-**주요 문서**: [BACKEND_API.md](./BACKEND_API.md)
+### 배포
 
----
+| 파일 | 설명 |
+|------|------|
+| **DEPLOYMENT.md** | 서버 배포 가이드 |
+| **TESTFLIGHT_SETUP.md** | iOS TestFlight 배포 절차 |
+| **ANDROID_PLAYSTORE_SETUP.md** | Android Play Store 배포 절차 |
+| **ui-ux-checklist.md** | 앱스토어 리젝 방지 체크리스트 |
 
-## Key Documents
+### 설정 및 메타데이터
 
-### [PRD.md](./PRD.md)
-
-Product Requirements Document - 현재 개발 기준 문서
-
-**주요 섹션**:
-- Product Vision & Core Concept
-- Data Architecture (SQLite)
-- UI/UX Specifications
-- Audio Playback System
-- Screen Dimming Feature
-- Development Timeline
-
-### [SCREEN_FLOW.md](./SCREEN_FLOW.md)
-
-화면 구성 및 네비게이션 플로우
-
-**주요 섹션**:
-- 전체 화면 목록 (9개)
-- Bottom Tab Bar (홈/전체/좋아요/설정)
-- 각 화면별 UI 와이어프레임
-- Navigation Structure (Stack + Tab)
-- Guest Mode / Phase 구분
-
-### [BACKEND_API.md](./BACKEND_API.md)
-
-Phase 2 백엔드 API 명세 - 서버 연동 시 참고
-
-**주요 섹션**:
-- Database Schema (Prisma)
-- REST API Endpoints
-- Authentication (예정)
-- Subscription (예정)
+| 파일 | 설명 |
+|------|------|
+| **lang.md** | 다국어 설정 |
+| **setting.md** | 앱 설정 항목 |
+| **store-metadata.md** | 앱스토어 메타데이터 |
 
 ---
 
-## Quick Reference
+## claudedocs/ 폴더와의 차이
 
-### Tech Stack (Phase 1)
+- **docs/** = 사람이 읽는 문서 (가이드, 절차서, 요구사항)
+- **claudedocs/** = 기술 참조 문서 (API 스펙, 코드 패턴, 타입 정의)
 
-| Layer | Technology |
-|-------|------------|
-| **Mobile Framework** | React Native |
-| **Navigation** | expo-router |
-| **State Management** | Zustand |
-| **Local Database** | SQLite (expo-sqlite) |
-| **Audio Player** | react-native-track-player |
-| **Authentication** | Apple Sign In, Google Sign In |
-| **Styling** | NativeWind (Tailwind CSS) |
+---
 
-### Project Structure
+## 프로젝트 구조
 
 ```
 heeling/
-├── docs/                   # 문서
-├── backend/                # Phase 2 백엔드 (보존)
-├── mobile/                 # React Native 앱 (예정)
-│   ├── app/               # expo-router 페이지
-│   ├── components/        # 재사용 컴포넌트
-│   ├── services/          # 비즈니스 로직
-│   ├── stores/            # Zustand 스토어
-│   ├── database/          # SQLite 관련
-│   └── assets/            # 번들 에셋
-└── prd2.md                 # 원본 PRD (참고용)
+├── docs/                   # 이 폴더 (사람용 문서)
+├── claudedocs/             # 기술 참조 문서 (Claude용)
+├── backend/                # Next.js 백엔드
+├── mobile/                 # React Native 앱
+│   ├── src/
+│   │   ├── app/           # 화면 및 네비게이션
+│   │   ├── components/    # 재사용 컴포넌트
+│   │   ├── services/      # 비즈니스 로직
+│   │   ├── api/           # API 클라이언트
+│   │   └── hooks/         # 커스텀 훅
+│   ├── ios/               # iOS 네이티브
+│   └── android/           # Android 네이티브
+└── .taskmaster/           # Task Master 설정
 ```
 
 ---
 
-## Development Workflow
+## 개발 시작하기
 
-### Starting Development
-
-1. PRD.md 확인
-2. Phase 1 요구사항 기준으로 개발
-3. 로컬 SQLite 우선 구현
-4. 서버 연동은 Phase 2에서 처리
-
-### When to Reference Archive
-
-- 광고 시스템 구현 시 → `archive/prd.md` (AdMob 명세)
-- 비즈니스 로직 참고 시 → `archive/EXECUTIVE_SUMMARY.md`
-- 라이브러리 선택 시 → `archive/module.md`
-
----
-
-**Contact**: Development Team
-**Repository**: heeling-app
+1. [DEV_ENVIRONMENT_SETUP.md](./DEV_ENVIRONMENT_SETUP.md) 확인
+2. [PRD.md](./PRD.md)로 요구사항 파악
+3. [MVP-RULES.md](./MVP-RULES.md)로 Scope 확인
+4. 개발 진행 → [DEV_LOG.md](./DEV_LOG.md)에 기록

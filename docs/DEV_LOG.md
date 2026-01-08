@@ -1,5 +1,7 @@
 # 개발일지 (Development Log)
 
+---
+
 ## 2025-01-07
 
 ### iOS 빌드 시행착오
@@ -98,6 +100,90 @@ const getPopularShuffled = (tracks: Track[], topN = 12, displayCount = 6) => {
 # iOS
 cd mobile/ios
 pod install
+open BRIBI.xcworkspace
+# Xcode: Product → Archive → Distribute to TestFlight
+```
+
+---
+
+## 2025-01-06
+
+### 작업 요약
+
+1. **MusicPreset duration hint 추가** - 트랙 길이 일관성 개선
+2. **사전 생성된 제목 캐시 경로 문제 해결**
+3. **PM2 중복 프로세스 정리**
+4. **iOS TestFlight 빌드 12 배포**
+
+### 1. 트랙 길이 일관성 개선
+
+**문제:**
+- Suno AI로 생성된 트랙 길이가 1분 ~ 7분으로 들쭉날쭉함
+- Suno API에는 직접적인 duration 파라미터가 없음
+
+**해결:**
+1. `suno-client.ts`의 HEALING_STYLES에 duration hint 추가
+2. MusicPreset DB 테이블도 함께 업데이트 (이게 우선 적용됨)
+
+```sql
+UPDATE "MusicPreset"
+SET "stylePrompt" = "stylePrompt" || ', 3-4 minutes long, extended composition'
+WHERE "stylePrompt" NOT LIKE '%3-4 minutes%';
+```
+
+### 2. 사전 생성된 제목 캐시 문제
+
+**문제:** 관리자 페이지에서 사전 생성된 제목이 0개로 표시됨
+
+**원인:** 경로 불일치
+- 실제 파일: `/root/heeling/storage/data/title-cache/`
+- 백엔드가 찾는 위치: `/root/heeling/backend/data/title-cache/`
+
+**해결:**
+```bash
+# PM2 실제 working directory 확인
+pm2 show heeling-backend | grep "exec cwd"
+
+# 올바른 위치에 symlink 생성
+mkdir -p /root/heeling/backend/data
+ln -sf /root/heeling/storage/data/title-cache /root/heeling/backend/data/title-cache
+```
+
+### 3. iOS TestFlight 빌드 12
+
+**시행착오:**
+- `pod install` 실행 시 인코딩 에러 → `LANG=en_US.UTF-8` 설정으로 해결
+- 터미널에서 App Store Connect 업로드 실패 → Xcode GUI 사용
+
+```bash
+# Archive 생성
+xcodebuild -workspace BRIBI.xcworkspace \
+  -scheme BRIBI \
+  -configuration Release \
+  -destination generic/platform=iOS \
+  archive \
+  -archivePath ./build/BRIBI.xcarchive
+
+# Xcode Organizer에서 열어서 업로드
+open ./build/BRIBI.xcarchive
+```
+
+---
+
+## 참고 명령어
+
+### VPS 서버
+```bash
+ssh root@141.164.60.51
+pm2 status
+pm2 logs heeling-backend
+pm2 restart heeling-backend
+```
+
+### iOS 빌드
+```bash
+cd mobile/ios
+LANG=en_US.UTF-8 pod install
 open BRIBI.xcworkspace
 # Xcode: Product → Archive → Distribute to TestFlight
 ```
