@@ -460,6 +460,8 @@ const HomeScreen: React.FC = () => {
 
   const onRefresh = async () => {
     setRefreshing(true);
+    // 캐시 클리어 후 새로 로드
+    await HomeService.clearCache();
     await loadData();
     setRefreshing(false);
   };
