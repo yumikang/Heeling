@@ -169,11 +169,14 @@ const HeroBanner: React.FC<{
             activeOpacity={0.9}
           >
             {banner.imageUrl && (
-              <Image
-                source={typeof banner.imageUrl === 'number' ? banner.imageUrl : { uri: banner.imageUrl }}
-                style={styles.heroBannerImage}
-                resizeMode="cover"
-              />
+              <>
+                <Image
+                  source={typeof banner.imageUrl === 'number' ? banner.imageUrl : { uri: banner.imageUrl }}
+                  style={styles.heroBannerImage}
+                  resizeMode="cover"
+                />
+                <View style={styles.heroBannerImageOverlay} />
+              </>
             )}
             {(banner.title || banner.subtitle) && (
               <View style={styles.heroBannerOverlay}>
@@ -451,9 +454,12 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
+  heroBannerImageOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0,0,0,0.25)',
+  },
   heroBannerOverlay: {
     padding: Spacing.lg,
-    backgroundColor: 'rgba(0,0,0,0.4)',
   },
   heroBannerTitle: {
     fontSize: 24,
