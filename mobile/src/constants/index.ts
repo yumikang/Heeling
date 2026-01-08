@@ -10,6 +10,8 @@ export const APP_VERSION = '1.0.0';
 // Feature Flags
 // MVP: 온보딩(개인화 맞춤) UI 비활성화 - v1.1에서 true로 변경
 export const ENABLE_ONBOARDING = false;
+// MVP: 프리미엄/구독 UI 비활성화 - IAP 스텁이므로 앱스토어 리젝 방지
+export const ENABLE_PREMIUM = false;
 
 // Timing Constants
 export const SPLASH_DURATION = 2000;

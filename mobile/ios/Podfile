@@ -13,7 +13,7 @@ install! 'cocoapods',
 
 prepare_react_native_project!
 
-# Firebase Swift pod 의존성 해결
+# Firebase Swift pod dependencies
 pod 'FirebaseCore', :modular_headers => true
 pod 'FirebaseCoreInternal', :modular_headers => true
 pod 'GoogleUtilities', :modular_headers => true

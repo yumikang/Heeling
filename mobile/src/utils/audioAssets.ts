@@ -6,14 +6,10 @@ type AudioAssetMap = {
 };
 
 // Map track audioFile keys to bundled assets
+// NOTE: Local audio files removed - using streaming URLs from backend instead
 const audioAssets: AudioAssetMap = {
-  cant_you_see: require('../../assets/audio/cant_you_see.mp3'),
-  dreaming_in_dusk: require('../../assets/audio/Dreaming in Dusk.mp3'),
-  dreams_in_slow_motion: require('../../assets/audio/Dreams in Slow Motion.mp3'),
-  moonlight_murmur: require('../../assets/audio/Moonlight Murmur.mp3'),
-  moonlight_reverie: require('../../assets/audio/Moonlight Reverie.mp3'),
-  pink_cloud: require('../../assets/audio/Pink cloud.mp3'),
-  still_as_the_sky: require('../../assets/audio/Still as the Sky.mp3'),
+  // Audio files are now streamed from backend URLs
+  // Local bundling disabled for MVP to reduce app size
 };
 
 /**

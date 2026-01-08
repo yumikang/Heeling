@@ -5,7 +5,8 @@
     "paths": {
       "@/*": ["src/*"]
     },
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "module": "esnext"
   },
   "include": ["src/**/*", "app/**/*", "index.ts", "index.tsx", "App.tsx"],
   "exclude": ["node_modules", "Pods", "android", "ios"]
