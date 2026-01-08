@@ -21,6 +21,61 @@ interface TitleCache {
 // Cache file path - 통합 캐시 (style/mood 무관하게 하나의 제목 풀 사용)
 const CACHE_DIR = path.join(process.cwd(), 'data', 'title-cache');
 
+// API usage recording helper (uses internal function to avoid HTTP overhead)
+async function recordApiUsage(apiType: 'gemini' | 'openai', success: boolean, count: number): Promise<void> {
+  try {
+    const usageFilePath = path.join(process.cwd(), '.cache', 'generation', 'api-usage.json');
+
+    // Load existing usage records (array format, compatible with cache/route.ts)
+    let usage: Array<{
+      date: string;
+      suno: { calls: number; success: number; failed: number; tracks: number };
+      gemini: { calls: number; success: number; failed: number; titles: number };
+      imagen: { calls: number; success: number; failed: number; images: number };
+    }> = [];
+
+    try {
+      const content = await readFile(usageFilePath, 'utf-8');
+      usage = JSON.parse(content);
+    } catch {
+      // File doesn't exist, start fresh
+    }
+
+    const today = new Date().toISOString().split('T')[0];
+    let todayRecord = usage.find(r => r.date === today);
+
+    if (!todayRecord) {
+      todayRecord = {
+        date: today,
+        suno: { calls: 0, success: 0, failed: 0, tracks: 0 },
+        gemini: { calls: 0, success: 0, failed: 0, titles: 0 },
+        imagen: { calls: 0, success: 0, failed: 0, images: 0 },
+      };
+      usage.push(todayRecord);
+    }
+
+    // Record under 'gemini' for both gemini and openai text generation
+    todayRecord.gemini.calls += 1;
+    if (success) {
+      todayRecord.gemini.success += 1;
+      todayRecord.gemini.titles += count;
+    } else {
+      todayRecord.gemini.failed += 1;
+    }
+
+    // Keep last 30 days only
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    const filtered = usage.filter(r => new Date(r.date) >= thirtyDaysAgo);
+
+    await mkdir(path.dirname(usageFilePath), { recursive: true });
+    await writeFile(usageFilePath, JSON.stringify(filtered, null, 2));
+    console.log(`[Titles API] Recorded API usage: ${apiType}, success: ${success}, count: ${count}`);
+  } catch (error) {
+    console.error('[Titles API] Failed to record API usage:', error);
+  }
+}
+
 function getCacheFilePath(category: string): string {
   // category별로 하나의 통합 캐시 파일 사용 (예: healing_titles.json)
   return path.join(CACHE_DIR, `${category}_titles.json`);
@@ -336,14 +391,25 @@ export async function POST(request: NextRequest) {
     const prompt = generateBatchTitlesPrompt(category, mood, style, count);
 
     let generatedText: string;
-    if (apiConfig.provider === 'gemini') {
-      generatedText = await callGemini(apiConfig.apiKey, prompt);
-    } else {
-      generatedText = await callOpenAI(apiConfig.apiKey, prompt);
+    const apiType = apiConfig.provider === 'gemini' ? 'gemini' : 'openai';
+
+    try {
+      if (apiConfig.provider === 'gemini') {
+        generatedText = await callGemini(apiConfig.apiKey, prompt);
+      } else {
+        generatedText = await callOpenAI(apiConfig.apiKey, prompt);
+      }
+    } catch (apiError) {
+      // Record failed API call
+      await recordApiUsage(apiType, false, 0);
+      throw apiError;
     }
 
     const newTitles = parseTitles(generatedText);
     console.log(`[Titles API] Parsed ${newTitles.length} valid titles`);
+
+    // Record successful API call
+    await recordApiUsage(apiType, true, newTitles.length);
 
     // Load existing cache and merge (통합 캐시)
     let cache = await loadCache(category);
