@@ -456,12 +456,14 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.4)',
   },
   heroBannerTitle: {
-    ...Typography.h2,
+    fontSize: 24,
+    fontWeight: '800',
+    lineHeight: 30,
     color: Colors.text,
   },
   heroBannerSubtitle: {
     ...Typography.body,
-    color: Colors.textSecondary,
+    color: Colors.text,
     marginTop: Spacing.xs,
   },
   pagination: {
