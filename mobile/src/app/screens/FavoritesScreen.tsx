@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, memo } from 'react';
 import {
   View,
   Text,
@@ -15,7 +15,7 @@ import { Colors, Typography, Spacing, BorderRadius } from '../../constants';
 import { TrackService } from '../../services';
 import { useFavoritesStore } from '../../stores';
 import { usePlayer } from '../../hooks';
-import { TrackCard, Button } from '../../components';
+import { TrackCard, Button, TRACK_CARD_HEIGHT } from '../../components';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
@@ -70,7 +70,7 @@ const FavoritesScreen: React.FC = () => {
   };
 
   const handleBrowse = () => {
-    navigation.navigate('MainTabs', { screen: 'Library' } as any);
+    navigation.navigate('MainTabs', { screen: 'Library' } as never);
   };
 
   // Empty State
@@ -145,6 +145,16 @@ const FavoritesScreen: React.FC = () => {
         )}
         contentContainerStyle={styles.listContent}
         showsVerticalScrollIndicator={false}
+        // Performance optimizations
+        initialNumToRender={10}
+        maxToRenderPerBatch={5}
+        windowSize={5}
+        removeClippedSubviews={true}
+        getItemLayout={(_, index) => ({
+          length: TRACK_CARD_HEIGHT,
+          offset: TRACK_CARD_HEIGHT * index,
+          index,
+        })}
       />
     </SafeAreaView>
   );
@@ -225,4 +235,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default FavoritesScreen;
+export default memo(FavoritesScreen);

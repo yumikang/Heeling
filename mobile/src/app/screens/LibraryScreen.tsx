@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef, useMemo, memo } from 'react';
 import {
   View,
   Text,
@@ -15,10 +15,13 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { RootStackParamList, MainTabParamList, Track } from '../../types';
 import { Colors, Typography, Spacing, BorderRadius, TRACK_CATEGORIES } from '../../constants';
-import { TrackService, SyncService, DownloadService } from '../../services';
+import { TrackService, SyncService, DownloadService, ErrorLogger } from '../../services';
 import { useFavoritesStore } from '../../stores';
 import { usePlayer, useDownload } from '../../hooks';
-import { TrackCard } from '../../components';
+import { TrackCard, TRACK_CARD_HEIGHT } from '../../components';
+
+// Screen logger
+const logger = ErrorLogger.forScreen('LibraryScreen');
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 type LibraryRouteProp = RouteProp<MainTabParamList, 'Library'>;
@@ -63,25 +66,44 @@ const LibraryScreen: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [refreshing, setRefreshing] = useState(false);
 
+  // 마운트 상태 추적
+  const isMountedRef = useRef(true);
+
+  useEffect(() => {
+    logger.info('mount', 'LibraryScreen mounted', { initialCategory });
+    isMountedRef.current = true;
+
+    return () => {
+      logger.info('unmount', 'LibraryScreen unmounting');
+      isMountedRef.current = false;
+    };
+  }, []);
+
   // route.params.category가 변경되면 카테고리 업데이트
   useEffect(() => {
     if (route.params?.category && route.params.category !== selectedCategory) {
+      logger.debug('categoryChange', 'Category changed via params', { newCategory: route.params.category });
       setSelectedCategory(route.params.category);
     }
   }, [route.params?.category]);
 
   const loadTracks = useCallback(async () => {
+    logger.debug('loadTracks', 'Loading tracks', { selectedCategory, searchQuery });
     try {
       const allTracks = await TrackService.getAllTracks();
-      setTracks(allTracks);
-      filterTracks(allTracks, selectedCategory, searchQuery);
+      if (isMountedRef.current) {
+        setTracks(allTracks);
+        filterTracks(allTracks, selectedCategory, searchQuery);
+        logger.info('loadTracks', 'Tracks loaded', { count: allTracks.length });
+      }
     } catch (error) {
-      console.error('Error loading tracks:', error);
+      logger.error('loadTracks', 'Error loading tracks', error as Error);
     }
   }, [selectedCategory, searchQuery]);
 
   // Load downloaded tracks
   const loadDownloadedTracks = useCallback(async () => {
+    logger.debug('loadDownloadedTracks', 'Loading downloaded tracks');
     try {
       const downloads = await DownloadService.getDownloadedTracks();
       const allTracks = await TrackService.getAllTracks();
@@ -89,21 +111,25 @@ const LibraryScreen: React.FC = () => {
       // Match downloaded tracks with full track data
       const downloadedTrackIds = downloads.map(d => d.trackId);
       const downloaded = allTracks.filter(t => downloadedTrackIds.includes(t.id));
-      setDownloadedTracks(downloaded);
+      if (isMountedRef.current) {
+        setDownloadedTracks(downloaded);
+        logger.info('loadDownloadedTracks', 'Downloaded tracks loaded', { count: downloaded.length });
+      }
     } catch (error) {
-      console.error('Error loading downloaded tracks:', error);
+      logger.error('loadDownloadedTracks', 'Error loading downloaded tracks', error as Error);
     }
   }, []);
 
+  // 초기 데이터 로드 (의존성 수정)
   useEffect(() => {
     loadTracks();
     loadDownloadedTracks();
-  }, []);
+  }, [loadTracks, loadDownloadedTracks]);
 
   // Refresh downloaded tracks when download count changes
   useEffect(() => {
     loadDownloadedTracks();
-  }, [downloadedCount]);
+  }, [downloadedCount, loadDownloadedTracks]);
 
   const filterTracks = (
     allTracks: Track[],
@@ -135,29 +161,40 @@ const LibraryScreen: React.FC = () => {
   }, [selectedCategory, searchQuery, tracks]);
 
   const onRefresh = async () => {
+    logger.info('refresh', 'Pull-to-refresh triggered', { activeTab });
     setRefreshing(true);
-    if (activeTab === 'library') {
-      // 서버에서 동기화 후 로컬 DB에서 로드
-      await SyncService.syncTracks();
-      await loadTracks();
-    } else {
-      await loadDownloadedTracks();
-      await refreshDownloads();
+    try {
+      if (activeTab === 'library') {
+        // 서버에서 동기화 후 로컬 DB에서 로드
+        await SyncService.syncTracks();
+        await loadTracks();
+      } else {
+        await loadDownloadedTracks();
+        await refreshDownloads();
+      }
+    } catch (error) {
+      logger.error('refresh', 'Error during refresh', error as Error);
+    } finally {
+      if (isMountedRef.current) {
+        setRefreshing(false);
+      }
     }
-    setRefreshing(false);
   };
 
   const handleTrackPress = (track: Track) => {
+    logger.info('trackPress', 'Track pressed', { trackId: track.id, title: track.title });
     playTrack(track);
     navigation.navigate('Player', { trackId: track.id });
   };
 
   const handleFavoritePress = (trackId: string) => {
+    logger.debug('favoritePress', 'Favorite toggled', { trackId });
     toggleFavorite(trackId);
   };
 
   const handleDownloadPress = (track: Track) => {
     const status = getDownloadStatus(track.id);
+    logger.info('downloadPress', 'Download action', { trackId: track.id, currentStatus: status });
     if (status === 'completed') {
       // Already downloaded - confirm delete
       deleteDownload(track.id);
@@ -169,6 +206,7 @@ const LibraryScreen: React.FC = () => {
   };
 
   const handleDeleteAllDownloads = async () => {
+    logger.warn('deleteAllDownloads', 'User requested delete all downloads');
     Alert.alert(
       '전체 다운로드 삭제',
       '모든 오프라인 저장본을 삭제하시겠습니까?',
@@ -178,9 +216,14 @@ const LibraryScreen: React.FC = () => {
           text: '삭제',
           style: 'destructive',
           onPress: async () => {
-            await DownloadService.deleteAllDownloads();
-            await loadDownloadedTracks();
-            await refreshDownloads();
+            try {
+              await DownloadService.deleteAllDownloads();
+              await loadDownloadedTracks();
+              await refreshDownloads();
+              logger.info('deleteAllDownloads', 'All downloads deleted successfully');
+            } catch (error) {
+              logger.error('deleteAllDownloads', 'Error deleting all downloads', error as Error);
+            }
           },
         },
       ]
@@ -295,6 +338,16 @@ const LibraryScreen: React.FC = () => {
             }
             contentContainerStyle={styles.listContent}
             showsVerticalScrollIndicator={false}
+            // Performance optimizations
+            initialNumToRender={10}
+            maxToRenderPerBatch={5}
+            windowSize={5}
+            removeClippedSubviews={true}
+            getItemLayout={(_, index) => ({
+              length: TRACK_CARD_HEIGHT,
+              offset: TRACK_CARD_HEIGHT * index,
+              index,
+            })}
           />
         </>
       ) : (
@@ -343,6 +396,16 @@ const LibraryScreen: React.FC = () => {
             }
             contentContainerStyle={styles.listContent}
             showsVerticalScrollIndicator={false}
+            // Performance optimizations
+            initialNumToRender={10}
+            maxToRenderPerBatch={5}
+            windowSize={5}
+            removeClippedSubviews={true}
+            getItemLayout={(_, index) => ({
+              length: TRACK_CARD_HEIGHT,
+              offset: TRACK_CARD_HEIGHT * index,
+              index,
+            })}
           />
         </>
       )}
@@ -463,4 +526,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default LibraryScreen;
+export default memo(LibraryScreen);

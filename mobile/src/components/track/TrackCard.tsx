@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import {
   View,
   Text,
@@ -33,6 +33,7 @@ interface TrackCardProps {
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const HORIZONTAL_CARD_SIZE = 160;
+export const TRACK_CARD_HEIGHT = 72; // For FlatList getItemLayout
 
 // Format duration from seconds to mm:ss
 const formatDuration = (seconds: number): string => {
@@ -325,4 +326,17 @@ const styles = StyleSheet.create({
   },
 });
 
-export default TrackCard;
+// React.memo로 불필요한 리렌더링 방지
+// props가 변경되지 않으면 리렌더링하지 않음
+export default memo(TrackCard, (prevProps, nextProps) => {
+  // Custom comparison for performance
+  return (
+    prevProps.track.id === nextProps.track.id &&
+    prevProps.isFavorite === nextProps.isFavorite &&
+    prevProps.isDownloaded === nextProps.isDownloaded &&
+    prevProps.downloadStatus === nextProps.downloadStatus &&
+    prevProps.downloadProgress === nextProps.downloadProgress &&
+    prevProps.isOfflineMode === nextProps.isOfflineMode &&
+    prevProps.variant === nextProps.variant
+  );
+});

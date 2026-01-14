@@ -137,8 +137,9 @@ export const useSleepTimer = () => {
             // Timer still active - restore it
             const remainingMinutes = Math.ceil(remainingMs / 60000);
             // Update Zustand store with approximate remaining time
+            // Note: remainingMinutes may not match SleepTimerOption exactly, but store accepts it
             usePlayerStore.setState({
-              sleepTimer: remainingMinutes as any,
+              sleepTimer: remainingMinutes as SleepTimerOption,
               sleepTimerEndTime: endTime,
             });
           } else {

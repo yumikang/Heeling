@@ -1,32 +1,4 @@
 {
-  "name": "HeelingMobile",
-  "displayName": "BRIBI",
-  "expo": {
-    "name": "BRIBI",
-    "slug": "bribi",
-    "version": "1.0.0",
-    "icon": "./assets/images/app-icon.png",
-    "ios": {
-      "bundleIdentifier": "com.heeling.mobile",
-      "icon": "./assets/images/app-icon.png",
-      "buildNumber": "17"
-    },
-    "android": {
-      "package": "com.heeling.mobile",
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/images/app-icon.png",
-        "backgroundColor": "#000000"
-      }
-    },
-    "plugins": [
-      "expo-asset",
-      "expo-font"
-    ],
-    "extra": {
-      "eas": {
-        "projectId": "118d7d2a-ad98-45ad-b8a6-e95d9048abb1"
-      }
-    },
-    "owner": "ymn9639"
-  }
+  "name": "BRIBI",
+  "displayName": "BRIBI"
 }

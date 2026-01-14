@@ -72,14 +72,32 @@ export const DownloadService = {
 
   /**
    * Get playable URL - returns local path if downloaded, otherwise remote URL
+   * Throws error if:
+   * - No valid URL is available (prevents native crashes)
+   * - Offline mode and track not downloaded (prevents streaming attempts)
    */
   async getPlayableUrl(track: Track): Promise<string> {
     const localPath = this.getLocalPath(track.id);
     const exists = await RNFS.exists(localPath);
 
+    // 로컬 파일 있으면 바로 반환 (오프라인에서도 OK)
     if (exists) {
       return `file://${localPath}`;
     }
+
+    // 오프라인 모드에서 다운로드 안된 트랙은 재생 불가
+    const networkCheck = NetworkService.canStream();
+    if (!networkCheck.allowed) {
+      console.warn('[DownloadService] Offline mode - track not downloaded:', track.id, track.title);
+      throw new Error(NetworkService.getRestrictionMessage(networkCheck.reason));
+    }
+
+    // Validate remote URL to prevent null pointer crashes in native code
+    if (!track.audioFile || track.audioFile.trim() === '') {
+      console.error('[DownloadService] Track has no valid audioFile URL:', track.id, track.title);
+      throw new Error(`Track "${track.title}" has no valid audio URL`);
+    }
+
     return track.audioFile;
   },
 

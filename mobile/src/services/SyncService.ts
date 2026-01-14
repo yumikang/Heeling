@@ -70,20 +70,20 @@ interface SyncResult {
  * - thumbnailUrl → background_image
  */
 const mapApiTrackToDb = (apiTrack: ApiTrack) => {
-  // localhost URL을 맥북 IP로 변환 (iOS 시뮬레이터용)
-  let audioFile = apiTrack.fileUrl;
-  if (audioFile.startsWith('http://localhost:3000') || audioFile.startsWith('http://127.0.0.1:3000')) {
-    audioFile = audioFile.replace(/http:\/\/(localhost|127\.0\.0\.1):3000/, API_BASE_URL);
-  } else if (audioFile.startsWith('/media/') || audioFile.startsWith('/audio/')) {
-    audioFile = `${API_BASE_URL}${audioFile}`;
+  // 오디오 URL 변환: 상대 경로 → 절대 경로 (공백/특수문자 인코딩)
+  let audioFile = apiTrack.fileUrl || '';
+  if (audioFile.startsWith('/')) {
+    audioFile = encodeURI(`${API_BASE_URL}${audioFile}`);
+  } else if (audioFile) {
+    audioFile = encodeURI(audioFile);
   }
 
-  // Convert thumbnailUrl to full URL
+  // 이미지 URL 변환: 상대 경로 → 절대 경로 (공백/특수문자 인코딩)
   let backgroundImage = apiTrack.thumbnailUrl || 'https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=600';
-  if (backgroundImage.startsWith('http://localhost:3000') || backgroundImage.startsWith('http://127.0.0.1:3000')) {
-    backgroundImage = backgroundImage.replace(/http:\/\/(localhost|127\.0\.0\.1):3000/, API_BASE_URL);
-  } else if (backgroundImage.startsWith('/media/') || backgroundImage.startsWith('/uploads/')) {
-    backgroundImage = `${API_BASE_URL}${backgroundImage}`;
+  if (backgroundImage.startsWith('/')) {
+    backgroundImage = encodeURI(`${API_BASE_URL}${backgroundImage}`);
+  } else if (backgroundImage) {
+    backgroundImage = encodeURI(backgroundImage);
   }
 
   return {
@@ -185,25 +185,20 @@ export const SyncService = {
    * Convert server track to local format (기존 호환성 유지)
    */
   serverToLocalTrack(serverTrack: ServerTrack): Partial<Track> {
-    // Convert fileUrl to full URL or asset key
-    let audioFile = serverTrack.fileUrl;
-
-    // localhost URL을 맥북 IP로 변환 (iOS 시뮬레이터용)
-    if (audioFile.startsWith('http://localhost:3000') || audioFile.startsWith('http://127.0.0.1:3000')) {
-      audioFile = audioFile.replace(/http:\/\/(localhost|127\.0\.0\.1):3000/, API_BASE_URL);
-    }
-    // If it's a relative path, convert to full URL
-    else if (audioFile.startsWith('/media/') || audioFile.startsWith('/audio/')) {
-      audioFile = `${API_BASE_URL}${audioFile}`;
+    // 오디오 URL 변환: 상대 경로 → 절대 경로 (공백/특수문자 인코딩)
+    let audioFile = serverTrack.fileUrl || '';
+    if (audioFile.startsWith('/')) {
+      audioFile = encodeURI(`${API_BASE_URL}${audioFile}`);
+    } else if (audioFile) {
+      audioFile = encodeURI(audioFile);
     }
 
-    // Convert thumbnailUrl to full URL
+    // 이미지 URL 변환: 상대 경로 → 절대 경로 (공백/특수문자 인코딩)
     let backgroundImage = serverTrack.thumbnailUrl || 'https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=600';
-    // localhost URL을 맥북 IP로 변환
-    if (backgroundImage.startsWith('http://localhost:3000') || backgroundImage.startsWith('http://127.0.0.1:3000')) {
-      backgroundImage = backgroundImage.replace(/http:\/\/(localhost|127\.0\.0\.1):3000/, API_BASE_URL);
-    } else if (backgroundImage.startsWith('/media/') || backgroundImage.startsWith('/uploads/')) {
-      backgroundImage = `${API_BASE_URL}${backgroundImage}`;
+    if (backgroundImage.startsWith('/')) {
+      backgroundImage = encodeURI(`${API_BASE_URL}${backgroundImage}`);
+    } else if (backgroundImage) {
+      backgroundImage = encodeURI(backgroundImage);
     }
 
     return {

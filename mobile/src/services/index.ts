@@ -19,3 +19,5 @@ export { IAPService, PRODUCT_IDS, SUBSCRIPTION_SKUS, PRODUCT_SKUS } from './IAPS
 export type { IAPProduct, IAPSubscription, PurchaseResult } from './IAPService';
 export { CacheService, CACHE_KEYS, type CacheKey } from './CacheService';
 export { CategoryService, type Category } from './CategoryService';
+export { ErrorLogger, type ErrorLog, type ErrorSeverity } from './ErrorLogger';
+export { SecureStorageService, type SecureStorageKey } from './SecureStorageService';

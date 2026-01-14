@@ -11,64 +11,17 @@ PODS:
     - PromisesObjC (~> 2.4)
   - boost (1.84.0)
   - DoubleConversion (1.1.6)
-  - EXConstants (18.0.13):
-    - ExpoModulesCore
-  - Expo (52.0.48):
-    - ExpoModulesCore
-  - ExpoAdapterGoogleSignIn (16.1.1):
-    - ExpoModulesCore
-    - GoogleSignIn (~> 9.0)
-    - React-Core
-  - ExpoAsset (12.0.12):
-    - ExpoModulesCore
-  - ExpoFont (14.0.10):
-    - ExpoModulesCore
-  - ExpoModulesCore (2.2.3):
-    - DoubleConversion
-    - glog
-    - hermes-engine
-    - RCT-Folly (= 2024.11.18.00)
-    - RCTRequired
-    - RCTTypeSafety
-    - React-Core
-    - React-debug
-    - React-Fabric
-    - React-featureflags
-    - React-graphics
-    - React-ImageManager
-    - React-jsinspector
-    - React-NativeModulesApple
-    - React-RCTAppDelegate
-    - React-RCTFabric
-    - React-rendererdebug
-    - React-utils
-    - ReactAppDependencyProvider
-    - ReactCodegen
-    - ReactCommon/turbomodule/bridging
-    - ReactCommon/turbomodule/core
-    - Yoga
   - fast_float (6.1.4)
   - FBLazyVector (0.77.0)
-  - Firebase/Analytics (11.5.0):
-    - Firebase/Core
-  - Firebase/Core (11.5.0):
+  - Firebase/AnalyticsWithoutAdIdSupport (11.5.0):
     - Firebase/CoreOnly
-    - FirebaseAnalytics (~> 11.5.0)
+    - FirebaseAnalytics/WithoutAdIdSupport (~> 11.5.0)
   - Firebase/CoreOnly (11.5.0):
     - FirebaseCore (= 11.5.0)
-  - FirebaseAnalytics (11.5.0):
-    - FirebaseAnalytics/AdIdSupport (= 11.5.0)
+  - FirebaseAnalytics/WithoutAdIdSupport (11.5.0):
     - FirebaseCore (= 11.5)
     - FirebaseInstallations (~> 11.0)
-    - GoogleUtilities/AppDelegateSwizzler (~> 8.0)
-    - GoogleUtilities/MethodSwizzler (~> 8.0)
-    - GoogleUtilities/Network (~> 8.0)
-    - "GoogleUtilities/NSData+zlib (~> 8.0)"
-    - nanopb (~> 3.30910.0)
-  - FirebaseAnalytics/AdIdSupport (11.5.0):
-    - FirebaseCore (= 11.5)
-    - FirebaseInstallations (~> 11.0)
-    - GoogleAppMeasurement (= 11.5.0)
+    - GoogleAppMeasurement/WithoutAdIdSupport (= 11.5.0)
     - GoogleUtilities/AppDelegateSwizzler (~> 8.0)
     - GoogleUtilities/MethodSwizzler (~> 8.0)
     - GoogleUtilities/Network (~> 8.0)
@@ -87,20 +40,6 @@ PODS:
     - PromisesObjC (~> 2.4)
   - fmt (11.0.2)
   - glog (0.3.5)
-  - GoogleAppMeasurement (11.5.0):
-    - GoogleAppMeasurement/AdIdSupport (= 11.5.0)
-    - GoogleUtilities/AppDelegateSwizzler (~> 8.0)
-    - GoogleUtilities/MethodSwizzler (~> 8.0)
-    - GoogleUtilities/Network (~> 8.0)
-    - "GoogleUtilities/NSData+zlib (~> 8.0)"
-    - nanopb (~> 3.30910.0)
-  - GoogleAppMeasurement/AdIdSupport (11.5.0):
-    - GoogleAppMeasurement/WithoutAdIdSupport (= 11.5.0)
-    - GoogleUtilities/AppDelegateSwizzler (~> 8.0)
-    - GoogleUtilities/MethodSwizzler (~> 8.0)
-    - GoogleUtilities/Network (~> 8.0)
-    - "GoogleUtilities/NSData+zlib (~> 8.0)"
-    - nanopb (~> 3.30910.0)
   - GoogleAppMeasurement/WithoutAdIdSupport (11.5.0):
     - GoogleUtilities/AppDelegateSwizzler (~> 8.0)
     - GoogleUtilities/MethodSwizzler (~> 8.0)
@@ -1375,10 +1314,74 @@ PODS:
   - react-native-render-html (6.3.4):
     - React-Core
   - react-native-safe-area-context (5.3.0):
+    - DoubleConversion
+    - glog
+    - hermes-engine
+    - RCT-Folly (= 2024.11.18.00)
+    - RCTRequired
+    - RCTTypeSafety
     - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - react-native-safe-area-context/common (= 5.3.0)
+    - react-native-safe-area-context/fabric (= 5.3.0)
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - Yoga
+  - react-native-safe-area-context/common (5.3.0):
+    - DoubleConversion
+    - glog
+    - hermes-engine
+    - RCT-Folly (= 2024.11.18.00)
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - Yoga
+  - react-native-safe-area-context/fabric (5.3.0):
+    - DoubleConversion
+    - glog
+    - hermes-engine
+    - RCT-Folly (= 2024.11.18.00)
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - react-native-safe-area-context/common
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - Yoga
   - react-native-sqlite-storage (6.0.1):
     - React-Core
-  - react-native-track-player (4.1.1):
+  - react-native-track-player (4.1.2):
     - React-Core
     - SwiftAudioEx (= 1.1.0)
   - react-native-volume-manager (1.10.0):
@@ -1676,9 +1679,28 @@ PODS:
   - RNAppleAuthentication (2.5.0):
     - React-Core
   - RNCAsyncStorage (2.1.0):
+    - DoubleConversion
+    - glog
+    - hermes-engine
+    - RCT-Folly (= 2024.11.18.00)
+    - RCTRequired
+    - RCTTypeSafety
     - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - Yoga
   - RNFBAnalytics (21.6.1):
-    - Firebase/Analytics (= 11.5.0)
+    - Firebase/AnalyticsWithoutAdIdSupport (= 11.5.0)
     - React-Core
     - RNFBApp
   - RNFBApp (21.6.1):
@@ -1708,8 +1730,27 @@ PODS:
     - ReactCommon/turbomodule/core
     - Yoga
   - RNGoogleSignin (16.1.1):
+    - DoubleConversion
+    - glog
     - GoogleSignIn (~> 9.0)
+    - hermes-engine
+    - RCT-Folly (= 2024.11.18.00)
+    - RCTRequired
+    - RCTTypeSafety
     - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - Yoga
   - RNReanimated (3.16.7):
     - DoubleConversion
     - glog
@@ -1818,6 +1859,29 @@ PODS:
     - ReactCodegen
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
+    - RNScreens/common (= 4.10.0)
+    - Yoga
+  - RNScreens/common (4.10.0):
+    - DoubleConversion
+    - glog
+    - hermes-engine
+    - RCT-Folly (= 2024.11.18.00)
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-RCTImage
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
     - Yoga
   - RNVectorIcons (10.2.0):
     - DoubleConversion
@@ -1847,17 +1911,10 @@ PODS:
 DEPENDENCIES:
   - boost (from `../node_modules/react-native/third-party-podspecs/boost.podspec`)
   - DoubleConversion (from `../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
-  - EXConstants (from `../node_modules/expo-constants/ios`)
-  - Expo (from `../node_modules/expo`)
-  - "ExpoAdapterGoogleSignIn (from `../node_modules/@react-native-google-signin/google-signin/expo/ios`)"
-  - ExpoAsset (from `../node_modules/expo-asset/ios`)
-  - ExpoFont (from `../node_modules/expo-font/ios`)
-  - ExpoModulesCore (from `../node_modules/expo-modules-core`)
   - fast_float (from `../node_modules/react-native/third-party-podspecs/fast_float.podspec`)
   - FBLazyVector (from `../node_modules/react-native/Libraries/FBLazyVector`)
   - FirebaseCore
   - FirebaseCoreInternal
-  - FirebaseInstallations
   - fmt (from `../node_modules/react-native/third-party-podspecs/fmt.podspec`)
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
   - GoogleUtilities
@@ -1966,18 +2023,6 @@ EXTERNAL SOURCES:
     :podspec: "../node_modules/react-native/third-party-podspecs/boost.podspec"
   DoubleConversion:
     :podspec: "../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec"
-  EXConstants:
-    :path: "../node_modules/expo-constants/ios"
-  Expo:
-    :path: "../node_modules/expo"
-  ExpoAdapterGoogleSignIn:
-    :path: "../node_modules/@react-native-google-signin/google-signin/expo/ios"
-  ExpoAsset:
-    :path: "../node_modules/expo-asset/ios"
-  ExpoFont:
-    :path: "../node_modules/expo-font/ios"
-  ExpoModulesCore:
-    :path: "../node_modules/expo-modules-core"
   fast_float:
     :podspec: "../node_modules/react-native/third-party-podspecs/fast_float.podspec"
   FBLazyVector:
@@ -2147,12 +2192,6 @@ SPEC CHECKSUMS:
   AppCheckCore: cc8fd0a3a230ddd401f326489c99990b013f0c4f
   boost: 7e761d76ca2ce687f7cc98e698152abd03a18f90
   DoubleConversion: cb417026b2400c8f53ae97020b2be961b59470cb
-  EXConstants: fce59a631a06c4151602843667f7cfe35f81e271
-  Expo: 3889933926fade17d8607f449c57b87c4022433f
-  ExpoAdapterGoogleSignIn: 21ff1daeef3d21cb0b45772d8029102cc728d6b1
-  ExpoAsset: f867e55ceb428aab99e1e8c082b5aee7c159ea18
-  ExpoFont: 35ac6191ed86bbf56b3ebd2d9154eda9fad5b509
-  ExpoModulesCore: 7cbb8499aa4f46aeefcf332922d4ab3d4b203fa8
   fast_float: 06eeec4fe712a76acc9376682e4808b05ce978b6
   FBLazyVector: 2bc03a5cf64e29c611bbc5d7eb9d9f7431f37ee6
   Firebase: 7a56fe4f56b5ab81b86a6822f5b8f909ae6fc7e2
@@ -2203,9 +2242,9 @@ SPEC CHECKSUMS:
   react-native-netinfo: cec9c4e86083cb5b6aba0e0711f563e2fbbff187
   react-native-orientation-locker: cc6f357b289a2e0dd2210fea0c52cb8e0727fdaa
   react-native-render-html: 5afc4751f1a98621b3009432ef84c47019dcb2bd
-  react-native-safe-area-context: fdb0a66feac038cb6eb1edafcf2ccee2b5cf0284
+  react-native-safe-area-context: 0f14bce545abcdfbff79ce2e3c78c109f0be283e
   react-native-sqlite-storage: 0c84826214baaa498796c7e46a5ccc9a82e114ed
-  react-native-track-player: 6dc2e2633265704b8ab6d8124b80239d4ed1f911
+  react-native-track-player: dd56f9948e03756a217c75e0a61aa04aab65b5a1
   react-native-volume-manager: d9d2863a2374420af89c89662333ea6adf506988
   React-nativeconfig: cd0fbb40987a9658c24dab5812c14e5522a64929
   React-NativeModulesApple: 4a9c304aa4fb086af32e8758ba892386d895b4d3
@@ -2213,10 +2252,10 @@ SPEC CHECKSUMS:
   React-performancetimeline: 46dbe9fd618ff882f59600dcd9fa923a9713cc3b
   React-RCTActionSheet: 25eb72eabade4095bfaf6cd9c5c965c76865daa8
   React-RCTAnimation: 8efbd0a4a71fd3dbe84e6d08b92bec5728b7524b
-  React-RCTAppDelegate: 24bd0809bbd8530433071cb23624b293fc4bfe46
+  React-RCTAppDelegate: 8ff6da817adefd15d4e25ade53a477c344f9b213
   React-RCTBlob: 6056bd62a56a6d2dad55cdf195949db1de623e14
-  React-RCTFabric: eb2fd8b31c7f2cd357bb6f13e31c7bf6b161af0c
-  React-RCTFBReactNativeSpec: f090aac2576291f571848cc408f3d200259c576d
+  React-RCTFabric: 949589de63c19b8b197555567fbc51eebd265bbc
+  React-RCTFBReactNativeSpec: 4214925b1c4829fb1e73bfbacb301244b522dc11
   React-RCTImage: 7b3f38c77e183bdcb43dbcd7b5842b96c814889a
   React-RCTLinking: 6cca74db71b23f670b72e45603e615c2b72b2235
   React-RCTNetwork: 5791b0718eff20c12f6f3d62e2ad50cff4b5c8a0
@@ -2237,19 +2276,19 @@ SPEC CHECKSUMS:
   ReactCodegen: c08a5113d9c9c895fe10f3c296f74c6b705a60a9
   ReactCommon: 1bd2dc684d7992acbf0dfee887b89a57a1ead86d
   RNAppleAuthentication: 9027af8aa92b4719ef1b6030a8e954d37079473a
-  RNCAsyncStorage: c91d753ede6dc21862c4922cd13f98f7cfde578e
-  RNFBAnalytics: 76060904a2ea0cb85e661d84543b8ac8c598ac7b
+  RNCAsyncStorage: 73773ca1dd29378bf0fe8dd7d67870d422e2fc05
+  RNFBAnalytics: f5db19a3c7905b18454045a8529dff90c983cc76
   RNFBApp: dba4effde174e4ba103548822a13b37e5c4f40d1
   RNFS: 89de7d7f4c0f6bafa05343c578f61118c8282ed8
-  RNGestureHandler: 9f3109e11ed88fe5bed280bf7762b25e4c52f396
-  RNGoogleSignin: 5782dd7dad559608a06f3c6b1d4142c395fb5308
-  RNReanimated: 9821995bd24f989b2618eac9510dc86c14d0a5df
-  RNScreens: cfb34cc4609bb92bd4fad6583be815075705a912
-  RNVectorIcons: f7a99433a71f4b38891c14c64b21fc521d064392
+  RNGestureHandler: 8b1080a6db0be82dbca18550d6212b885bfab6b2
+  RNGoogleSignin: ae48790eb1f5e027e9ddfd0a779c8155f609d788
+  RNReanimated: 8a4ea733f88a33379150eb2e73b375e14de81e84
+  RNScreens: 790123c4a28783d80a342ce42e8c7381bed62db1
+  RNVectorIcons: bd818296a51dc2bb8c3bd97a3ca399df1afe216d
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
   SwiftAudioEx: f6aa653770f3a0d3851edaf8d834a30aee4a7646
   Yoga: 78d74e245ed67bb94275a1316cdc170b9b7fe884
 
-PODFILE CHECKSUM: c2ddfff77b07c8ad230def0b78895b2423e0545e
+PODFILE CHECKSUM: 4e0fdf4ade03487b89aafe63de7b9ffa06e84900
 
 COCOAPODS: 1.16.2

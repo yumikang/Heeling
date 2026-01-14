@@ -3,7 +3,7 @@
  * 히어로 배너 클릭 시 연결되는 큐레이션 페이지
  */
 
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, memo } from 'react';
 import {
   View,
   Text,
@@ -14,6 +14,7 @@ import {
   ActivityIndicator,
   Dimensions,
   StatusBar,
+  Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
@@ -24,9 +25,15 @@ import TrackPlayer from 'react-native-track-player';
 import { RootStackParamList, Track } from '../../types';
 import { Colors, Typography, Spacing } from '../../constants';
 import { HomeService, ServerPlaylist } from '../../services/HomeService';
+import { ErrorLogger } from '../../services/ErrorLogger';
+import { NetworkService } from '../../services/NetworkService';
+import { DownloadService } from '../../services/DownloadService';
 import { usePlayerStore, useFavoritesStore } from '../../stores';
 import { resolveAudioFile } from '../../utils/audioAssets';
 import { TrackService } from '../../services';
+
+// Screen logger
+const logger = ErrorLogger.forScreen('PlaylistScreen');
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const HEADER_HEIGHT = 280;
@@ -50,6 +57,7 @@ const PlaylistScreen: React.FC = () => {
   // 데이터 로드
   useEffect(() => {
     const loadPlaylist = async () => {
+      logger.info('loadPlaylist', 'Loading playlist', { playlistId });
       try {
         setIsLoading(true);
         setError(null);
@@ -59,11 +67,13 @@ const PlaylistScreen: React.FC = () => {
           setPlaylist(data);
           const localTracks = data.tracks.map(t => HomeService.playlistTrackToLocal(t));
           setTracks(localTracks);
+          logger.info('loadPlaylist', 'Playlist loaded successfully', { trackCount: localTracks.length });
         } else {
+          logger.warn('loadPlaylist', 'Playlist not found', { playlistId });
           setError('플레이리스트를 찾을 수 없습니다');
         }
       } catch (err) {
-        console.error('Error loading playlist:', err);
+        logger.error('loadPlaylist', 'Error loading playlist', err as Error, { playlistId });
         setError('플레이리스트를 불러오는데 실패했습니다');
       } finally {
         setIsLoading(false);
@@ -75,27 +85,66 @@ const PlaylistScreen: React.FC = () => {
 
   // 트랙 재생
   const playTrack = useCallback(async (track: Track, index: number) => {
+    logger.info('playTrack', 'Starting track playback', { trackId: track.id, title: track.title, index });
+
+    // 오프라인 모드에서 다운로드 안된 트랙 재생 방지
+    const networkCheck = NetworkService.canStream();
+    if (!networkCheck.allowed) {
+      const isDownloaded = await DownloadService.isDownloaded(track.id);
+      if (!isDownloaded) {
+        logger.warn('playTrack', 'Blocked - offline mode without download', { trackId: track.id });
+        Alert.alert(
+          '오프라인 모드',
+          NetworkService.getRestrictionMessage(networkCheck.reason),
+          [{ text: '확인' }]
+        );
+        return;
+      }
+    }
+
     try {
-      const resolvedUrl = resolveAudioFile(track.audioFile);
       await TrackPlayer.reset();
+      // 안전한 reset 대기 (네이티브 레이어 안정화 - 크래시 방지)
+      await new Promise<void>(resolve => setTimeout(() => resolve(), 100));
 
-      // 현재 트랙부터 끝까지 큐에 추가
-      const queue = tracks.slice(index).map(t => ({
-        id: t.id,
-        url: resolveAudioFile(t.audioFile) as any,
-        title: t.title,
-        artist: t.artist,
-        artwork: t.backgroundImage,
-        duration: t.duration,
-      }));
+      // 현재 트랙부터 끝까지 큐에 추가 (null URL 필터링)
+      const queue = tracks.slice(index)
+        .map(t => {
+          const url = resolveAudioFile(t.audioFile);
+          if (!url) {
+            logger.warn('playTrack', 'Track skipped - invalid URL', { trackId: t.id, title: t.title });
+            return null;
+          }
+          return {
+            id: t.id,
+            url: url as unknown as string,
+            title: t.title,
+            artist: t.artist,
+            artwork: t.backgroundImage,
+            duration: t.duration,
+          };
+        })
+        .filter((t): t is NonNullable<typeof t> => t !== null);
 
+      if (queue.length === 0) {
+        logger.error('playTrack', 'No valid tracks to play - all URLs invalid');
+        return;
+      }
+
+      logger.debug('playTrack', 'Adding tracks to queue', { queueLength: queue.length });
       await TrackPlayer.add(queue);
       await TrackPlayer.play();
       setTrack(track);
       await TrackService.incrementPlayCount(track.id);
+      logger.info('playTrack', 'Playback started successfully', { trackId: track.id });
       navigation.navigate('Player', { trackId: track.id });
     } catch (error) {
-      console.error('Error playing track:', error);
+      logger.error('playTrack', 'Error playing track', error as Error, { trackId: track.id, index });
+      Alert.alert(
+        '재생 오류',
+        '트랙을 재생할 수 없습니다. 네트워크 연결을 확인해주세요.',
+        [{ text: '확인' }]
+      );
     }
   }, [tracks, setTrack, navigation]);
 
@@ -108,24 +157,77 @@ const PlaylistScreen: React.FC = () => {
 
   // 셔플 재생
   const shufflePlay = useCallback(async () => {
+    logger.info('shufflePlay', 'Starting shuffle playback', { trackCount: tracks.length });
     if (tracks.length > 0) {
-      const shuffled = [...tracks].sort(() => Math.random() - 0.5);
-      const firstTrack = shuffled[0];
+      // 오프라인 모드 체크 - 첫 번째 트랙 기준
+      const networkCheck = NetworkService.canStream();
+      if (!networkCheck.allowed) {
+        // 셔플은 랜덤이므로 다운로드된 트랙 중 하나라도 있는지 확인
+        const downloadedTracks = await Promise.all(
+          tracks.map(async (t) => ({
+            track: t,
+            isDownloaded: await DownloadService.isDownloaded(t.id),
+          }))
+        );
+        const hasDownloaded = downloadedTracks.some((d) => d.isDownloaded);
+        if (!hasDownloaded) {
+          logger.warn('shufflePlay', 'Blocked - no downloaded tracks in offline mode');
+          Alert.alert(
+            '오프라인 모드',
+            NetworkService.getRestrictionMessage(networkCheck.reason),
+            [{ text: '확인' }]
+          );
+          return;
+        }
+      }
 
-      await TrackPlayer.reset();
-      const queue = shuffled.map(t => ({
-        id: t.id,
-        url: resolveAudioFile(t.audioFile) as any,
-        title: t.title,
-        artist: t.artist,
-        artwork: t.backgroundImage,
-        duration: t.duration,
-      }));
+      try {
+        const shuffled = [...tracks].sort(() => Math.random() - 0.5);
 
-      await TrackPlayer.add(queue);
-      await TrackPlayer.play();
-      setTrack(firstTrack);
-      navigation.navigate('Player', { trackId: firstTrack.id });
+        await TrackPlayer.reset();
+        // 안전한 reset 대기 (네이티브 레이어 안정화 - 크래시 방지)
+        await new Promise<void>(resolve => setTimeout(() => resolve(), 100));
+
+        // null URL 필터링
+        const queue = shuffled
+          .map(t => {
+            const url = resolveAudioFile(t.audioFile);
+            if (!url) {
+              logger.warn('shufflePlay', 'Track skipped - invalid URL', { trackId: t.id });
+              return null;
+            }
+            return {
+              id: t.id,
+              url: url as unknown as string,
+              title: t.title,
+              artist: t.artist,
+              artwork: t.backgroundImage,
+              duration: t.duration,
+            };
+          })
+          .filter((t): t is NonNullable<typeof t> => t !== null);
+
+        if (queue.length === 0) {
+          logger.error('shufflePlay', 'No valid tracks to play');
+          return;
+        }
+
+        const firstTrack = shuffled.find(t => resolveAudioFile(t.audioFile) !== null);
+        if (!firstTrack) return;
+
+        await TrackPlayer.add(queue);
+        await TrackPlayer.play();
+        setTrack(firstTrack);
+        logger.info('shufflePlay', 'Shuffle playback started', { queueLength: queue.length });
+        navigation.navigate('Player', { trackId: firstTrack.id });
+      } catch (error) {
+        logger.error('shufflePlay', 'Error starting shuffle playback', error as Error);
+        Alert.alert(
+          '재생 오류',
+          '셔플 재생을 시작할 수 없습니다. 네트워크 연결을 확인해주세요.',
+          [{ text: '확인' }]
+        );
+      }
     }
   }, [tracks, setTrack, navigation]);
 
@@ -436,4 +538,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PlaylistScreen;
+export default memo(PlaylistScreen);

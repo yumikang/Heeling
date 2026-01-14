@@ -77,24 +77,40 @@ export interface ServerHomeSection {
   items: ServerHomeSectionItem[];
 }
 
-// URL 변환 유틸리티
-const toFullUrl = (path: string | null | undefined): string | undefined => {
-  if (!path) return undefined;
+// URL 변환 유틸리티 (이미지용 - 기본값 제공)
+const toImageUrl = (path: string | null | undefined): string => {
+  const DEFAULT_IMAGE = 'https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=600';
+  if (!path || path.trim() === '') return DEFAULT_IMAGE;
 
-  // localhost URL을 맥북 IP로 변환 (iOS 시뮬레이터용)
-  if (path.startsWith('http://localhost:3000') || path.startsWith('http://127.0.0.1:3000')) {
-    return path.replace(/http:\/\/(localhost|127\.0\.0\.1):3000/, API_BASE_URL);
-  }
+  // 이미 전체 URL인 경우 (인코딩 필요 시 적용)
+  if (path.startsWith('http')) return encodeURI(path);
 
-  // 이미 전체 URL인 경우
-  if (path.startsWith('http')) return path;
-
-  // 상대 경로를 절대 경로로 변환
+  // 상대 경로를 절대 경로로 변환 (공백/특수문자 인코딩)
   if (path.startsWith('/')) {
-    return `${API_BASE_URL}${path}`;
+    return encodeURI(`${API_BASE_URL}${path}`);
   }
 
-  return path;
+  return DEFAULT_IMAGE;
+};
+
+// URL 변환 유틸리티 (오디오용 - 유효하지 않으면 빈 문자열 반환)
+const toAudioUrl = (path: string | null | undefined): string => {
+  if (!path || path.trim() === '') {
+    console.warn('[HomeService] Invalid audio URL: empty or null');
+    return '';
+  }
+
+  // 이미 전체 URL인 경우 (인코딩 필요 시 적용)
+  if (path.startsWith('http')) {
+    return encodeURI(path);
+  }
+
+  // 상대 경로를 절대 경로로 변환 (공백/특수문자 인코딩)
+  if (path.startsWith('/')) {
+    return encodeURI(`${API_BASE_URL}${path}`);
+  }
+
+  return encodeURI(path);
 };
 
 // 변환 유틸리티
@@ -104,8 +120,8 @@ const serverTrackToLocal = (track: ServerTrack): Track => ({
   artist: track.artist || track.composer || 'BRIBI',
   category: track.category || 'healing',
   duration: track.duration,
-  audioFile: toFullUrl(track.fileUrl) || track.fileUrl,
-  backgroundImage: toFullUrl(track.thumbnailUrl) || 'https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=600',
+  audioFile: toAudioUrl(track.fileUrl),
+  backgroundImage: toImageUrl(track.thumbnailUrl),
   recommendedBrightness: 0.3,
   isFree: true,
   sortOrder: track.sortOrder || 0,
@@ -335,8 +351,8 @@ export const HomeService = {
       artist: track.composer || 'BRIBI',
       category: 'healing',
       duration: track.duration,
-      audioFile: toFullUrl(track.fileUrl) || track.fileUrl,
-      backgroundImage: toFullUrl(track.thumbnailUrl) || 'https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=600',
+      audioFile: toAudioUrl(track.fileUrl),
+      backgroundImage: toImageUrl(track.thumbnailUrl),
       recommendedBrightness: 0.3,
       isFree: true,
       sortOrder: track.position,

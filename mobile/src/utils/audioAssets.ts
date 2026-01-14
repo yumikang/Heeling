@@ -15,9 +15,15 @@ const audioAssets: AudioAssetMap = {
 /**
  * Resolves an audio file key to either a bundled asset or URL
  * @param audioFile - Either a key from audioAssets or a full URL
- * @returns The bundled asset number or the original URL string
+ * @returns The bundled asset number or the original URL string, null if invalid
  */
-export const resolveAudioFile = (audioFile: string): number | string => {
+export const resolveAudioFile = (audioFile: string | null | undefined): number | string | null => {
+  // Validate input - prevent null pointer crashes in native code
+  if (!audioFile || audioFile.trim() === '') {
+    console.warn('[resolveAudioFile] Invalid audioFile: empty or null');
+    return null;
+  }
+
   // If it's a URL, return as-is
   if (audioFile.startsWith('http://') || audioFile.startsWith('https://')) {
     return audioFile;
