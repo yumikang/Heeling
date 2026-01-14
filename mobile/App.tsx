@@ -197,8 +197,8 @@ function App(): React.JSX.Element {
   }
 
   return (
-    <ErrorBoundary>
-      <GestureHandlerRootView style={{ flex: 1 }}>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <ErrorBoundary>
         <SafeAreaProvider>
           <StatusBar
             barStyle="light-content"
@@ -244,8 +244,8 @@ function App(): React.JSX.Element {
             />
           </NavigationContainer>
         </SafeAreaProvider>
-      </GestureHandlerRootView>
-    </ErrorBoundary>
+      </ErrorBoundary>
+    </GestureHandlerRootView>
   );
 }
 
